@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THINKSMITH — 사고의 대장장이</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<script>
+tailwind.config = {
+  darkMode: ['class', '[data-theme="dark"]'],
+  theme: {
+    extend: {
+      colors: {
+        charcoal: '#0A0A0A',
+        stone: '#E9E6E1',
+        ember: '#FF6B35',
+        'ember-dark': '#CC5529',
+        'warm-gray': '#1A1A1A',
+        'mid-gray': '#2A2A2A',
+      },
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+        cormorant: ['Cormorant Garamond', 'serif'],
+        inter: ['Inter', 'Pretendard Variable', 'sans-serif'],
+        pretendard: ['Pretendard Variable', 'Inter', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  ::selection {
+    background: #FF6B35;
+    color: #0A0A0A;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #FF6B35 #0A0A0A;
+  }
+
+  body {
+    font-family: 'Inter', 'Pretendard Variable', sans-serif;
+    background: #0A0A0A;
+    color: #E9E6E1;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ─── Scrollbar ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: #FF6B35; border-radius: 3px; }
+
+  /* ─── Navigation ─── */
+  .nav-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    mix-blend-mode: difference;
+    pointer-events: none;
+  }
+
+  .nav-fixed a,
+  .nav-fixed button,
+  .nav-fixed .nav-link {
+    pointer-events: auto;
+  }
+
+  .nav-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+
+  .nav-brand:hover { opacity: 0.7; }
+
+  .nav-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+
+  .nav-link:hover { opacity: 0.6; }
+
+  .nav-horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  /* ─── Theme Toggle ─── */
+  .theme-toggle {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-size: 14px;
+  }
+
+  .theme-toggle:hover {
+    border-color: #FF6B35;
+    color: #FF6B35;
+  }
+
+  /* ─── Hamburger ─── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    pointer-events: auto;
+    background: none;
+    border: none;
+    padding: 8px;
+    z-index: 1002;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: #fff;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-origin: center;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+  }
+
+  /* ─── Mobile Menu Overlay ─── */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: #0A0A0A;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .mobile-menu.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mobile-menu a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #E9E6E1;
+    text-decoration: none;
+    transition: color 0.3s;
+    writing-mode: horizontal-tb;
+  }
+
+  .mobile-menu a:hover { color: #FF6B35; }
+
+  /* ─── Hero Section ─── */
+  .hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 clamp(2rem, 5vw, 6rem);
+    overflow: hidden;
+  }
+
+  .hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+    gap: 3rem;
+  }
+
+  .hero-left {
+    flex: 1;
+  }
+
+  .hero-mascot {
+    flex-shrink: 0;
+    width: clamp(200px, 25vw, 400px);
+    height: clamp(200px, 25vw, 400px);
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(255,107,53,0.3);
+    box-shadow: 0 0 40px rgba(255,107,53,0.15), 0 0 80px rgba(255,107,53,0.08), 0 0 120px rgba(255,107,53,0.04);
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-mascot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-mascot .mascot-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1A1A1A 0%, #111 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: rgba(255,107,53,0.4);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .hero-mascot .mascot-placeholder .icon {
+    font-size: 3rem;
+    color: rgba(255,107,53,0.3);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(255,107,53,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(255,107,53,0.02) 0%, transparent 50%),
+      linear-gradient(180deg, #0A0A0A 0%, #0D0D0D 50%, #0A0A0A 100%);
+    z-index: 0;
+  }
+
+  .hero-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(4rem, 13vw, 16rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-title .think {
+    color: #FFFFFF;
+    display: block;
+    opacity: 0;
+    transform: translateY(60px);
+    animation: heroReveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+  }
+
+  .hero-title .smith {
+    color: #FF6B35;
+    display: block;
+    opacity: 0;
+    transform: translateY(60px);
+    animation: heroReveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
+    text-shadow:
+      0 0 40px rgba(255,107,53,0.3),
+      0 0 80px rgba(255,107,53,0.1);
+  }
+
+  @keyframes heroReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes anvilGlow {
+    0%, 100% {
+      text-shadow:
+        0 0 40px rgba(255,107,53,0.3),
+        0 0 80px rgba(255,107,53,0.1);
+    }
+    50% {
+      text-shadow:
+        0 0 60px rgba(255,107,53,0.5),
+        0 0 120px rgba(255,107,53,0.2),
+        0 0 180px rgba(255,107,53,0.05);
+    }
+  }
+
+  .smith-glow {
+    animation: anvilGlow 3s ease-in-out infinite;
+  }
+
+  .hero-bottom {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid rgba(233,230,225,0.15);
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+
+  .hero-subtitle-kr {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.8rem);
+    color: #E9E6E1;
+    font-weight: 400;
+  }
+
+  .hero-right {
+    text-align: right;
+    max-width: 500px;
+  }
+
+  .hero-tagline {
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.8;
+    color: rgba(233,230,225,0.6);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-nav {
+    display: flex;
+    gap: 2rem;
+    justify-content: flex-end;
+  }
+
+  .hero-nav a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #E9E6E1;
+    text-decoration: none;
+    transition: color 0.3s;
+    font-weight: 600;
+  }
+
+  .hero-nav a:hover { color: #FF6B35; }
+
+  /* ─── Spark Particles ─── */
+  /* ─── Scroll Video Background ─── */
+  .video-section {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .video-bg.playing video {
+    opacity: 0.15;
+  }
+
+  .video-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.3) 50%, rgba(10,10,10,0.8) 100%);
+    z-index: 1;
+  }
+
+  .video-section > *:not(.video-bg) {
+    position: relative;
+    z-index: 2;
+  }
+
+  [data-theme="light"] .video-bg.playing video {
+    opacity: 0.08;
+  }
+
+  .sparks-container {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .spark {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #FF6B35;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkFloat ease-out infinite;
+    box-shadow: 0 0 12px rgba(255,107,53,0.8), 0 0 24px rgba(255,107,53,0.4), 0 0 48px rgba(255,107,53,0.15);
+  }
+
+  .spark.spark-large {
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 0 20px rgba(255,107,53,0.9), 0 0 40px rgba(255,107,53,0.5), 0 0 80px rgba(255,107,53,0.2);
+  }
+
+  .spark.spark-ember {
+    background: radial-gradient(circle, #FF6B35 30%, #FF4500 70%, transparent 100%);
+    filter: blur(0.5px);
+  }
+
+  @keyframes sparkFloat {
+    0% {
+      opacity: 0;
+      transform: translateY(0) translateX(0) scale(0.5);
+    }
+    8% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+    }
+    80% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-400px) translateX(var(--drift)) scale(0);
+    }
+  }
+
+  /* ─── About Section (Light) ─── */
+  .section-light {
+    background: #E9E6E1;
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] .section-light {
+    background: #0A0A0A;
+    color: #E9E6E1;
+  }
+
+  [data-theme="light"] .section-dark {
+    background: #E9E6E1;
+    color: #0A0A0A;
+  }
+
+  .section-dark {
+    background: #0A0A0A;
+    color: #E9E6E1;
+  }
+
+  .about-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    text-transform: uppercase;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .about-text {
+    font-family: 'Pretendard Variable', 'Inter', sans-serif;
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 2;
+    opacity: 0.9;
+    word-break: keep-all;
+  }
+
+  .highlight {
+    color: #FF6B35;
+    font-weight: 600;
+  }
+
+  .section-light .highlight {
+    color: #CC5529;
+  }
+
+  .stat-number {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: #FF6B35;
+  }
+
+  .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-top: 0.25rem;
+  }
+
+  /* ─── Skills Section ─── */
+  .skill-number {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    font-size: clamp(3rem, 6vw, 5rem);
+    color: rgba(233,230,225,0.08);
+    line-height: 1;
+  }
+
+  .skill-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .skill-subtitle {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(233,230,225,0.5);
+    margin-top: 0.25rem;
+  }
+
+  [data-theme="light"] .section-dark .skill-subtitle {
+    color: rgba(10,10,10,0.5);
+  }
+
+  [data-theme="light"] .section-dark .skill-number {
+    color: rgba(10,10,10,0.08);
+  }
+
+  .skill-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    line-height: 1.8;
+    opacity: 0.7;
+    max-width: 480px;
+  }
+
+  .explore-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #FF6B35;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: gap 0.3s;
+  }
+
+  .explore-link:hover { gap: 1rem; }
+
+  .code-card {
+    background: linear-gradient(135deg, #1A1A1A 0%, #111 100%);
+    border: 1px solid rgba(255,107,53,0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    line-height: 2;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .code-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.3), transparent);
+  }
+
+  .code-keyword { color: #FF6B35; }
+  .code-string { color: #8BC34A; }
+  .code-comment { color: rgba(233,230,225,0.3); }
+  .code-var { color: #64B5F6; }
+
+  .tag-pill {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(233,230,225,0.15);
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    transition: all 0.3s;
+    color: #E9E6E1;
+  }
+
+  .tag-pill:hover {
+    border-color: #FF6B35;
+    color: #FF6B35;
+  }
+
+  [data-theme="light"] .section-dark .tag-pill {
+    color: #0A0A0A;
+    border-color: rgba(10,10,10,0.15);
+  }
+  [data-theme="light"] .section-dark .tag-pill:hover {
+    border-color: #FF6B35;
+    color: #FF6B35;
+  }
+
+  .chart-bar {
+    background: rgba(255,107,53,0.15);
+    border-radius: 4px 4px 0 0;
+    transition: background 0.3s;
+    position: relative;
+  }
+
+  .chart-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #FF6B35;
+  }
+
+  .chart-bar:hover {
+    background: rgba(255,107,53,0.3);
+  }
+
+  /* ─── Philosophy Section ─── */
+  .philosophy-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    text-transform: uppercase;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .philosophy-card {
+    padding: 2rem;
+    border: 1px solid rgba(10,10,10,0.1);
+    border-radius: 8px;
+    transition: all 0.4s;
+    background: transparent;
+  }
+
+  [data-theme="light"] .section-light .philosophy-card {
+    border-color: rgba(233,230,225,0.15);
+  }
+
+  .philosophy-card:hover {
+    border-color: #FF6B35;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(255,107,53,0.08);
+  }
+
+  .philosophy-card .iconify {
+    font-size: 1.5rem;
+    color: #FF6B35;
+  }
+
+  /* ─── Contact Section ─── */
+  .contact-bg {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(255,107,53,0.06) 0%, transparent 60%),
+      linear-gradient(180deg, #0A0A0A 0%, #0D0D0D 100%);
+    z-index: 0;
+  }
+
+  .contact-huge {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(4rem, 15vw, 18rem);
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+    color: rgba(233,230,225,0.15);
+    -webkit-text-stroke: 1.5px rgba(255,107,53,0.3);
+    user-select: none;
+    text-shadow: 0 0 60px rgba(255,107,53,0.08);
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    border: 1px solid rgba(233,230,225,0.3);
+    background: transparent;
+    color: #E9E6E1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.4s, border-color 0.4s;
+    z-index: 1;
+  }
+
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #FF6B35;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: -1;
+  }
+
+  .cta-btn:hover {
+    border-color: #FF6B35;
+    color: #fff;
+  }
+
+  .cta-btn:hover::before {
+    transform: scaleX(1);
+  }
+
+  [data-theme="light"] .section-dark .cta-btn {
+    color: #0A0A0A;
+    border-color: rgba(10,10,10,0.3);
+  }
+  [data-theme="light"] .section-dark .cta-btn:hover {
+    color: #fff;
+    border-color: #FF6B35;
+  }
+
+  /* ─── Guestbook ─── */
+  .guestbook-input {
+    width: 100%;
+    background: rgba(233,230,225,0.05);
+    border: 1px solid rgba(233,230,225,0.1);
+    color: #E9E6E1;
+    padding: 0.9rem 1.2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .guestbook-input:focus {
+    border-color: #FF6B35;
+  }
+
+  .guestbook-input::placeholder {
+    color: rgba(233,230,225,0.3);
+  }
+
+  [data-theme="light"] .section-dark .guestbook-input {
+    background: rgba(10,10,10,0.05);
+    border-color: rgba(10,10,10,0.1);
+    color: #0A0A0A;
+  }
+  [data-theme="light"] .section-dark .guestbook-input::placeholder {
+    color: rgba(10,10,10,0.3);
+  }
+  [data-theme="light"] .section-dark .guestbook-input:focus {
+    border-color: #FF6B35;
+  }
+
+  .guestbook-submit {
+    background: #FF6B35;
+    color: #fff;
+    border: none;
+    padding: 0.9rem 2rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  .guestbook-submit:hover {
+    background: #CC5529;
+    transform: translateY(-1px);
+  }
+
+  .guestbook-submit:active {
+    transform: translateY(0);
+  }
+
+  .message-card {
+    background: rgba(233,230,225,0.03);
+    border: 1px solid rgba(233,230,225,0.06);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    transition: border-color 0.3s;
+  }
+
+  .message-card:hover {
+    border-color: rgba(255,107,53,0.2);
+  }
+
+  [data-theme="light"] .section-dark .message-card {
+    background: rgba(10,10,10,0.03);
+    border-color: rgba(10,10,10,0.06);
+  }
+
+  /* ─── Footer ─── */
+  .footer-section {
+    border-top: 1px solid rgba(233,230,225,0.08);
+  }
+
+  [data-theme="light"] .footer-section {
+    border-top-color: rgba(10,10,10,0.08);
+  }
+
+  /* ─── Scroll Animations ─── */
+  .anim-fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .anim-slide-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .anim-slide-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .anim-scale-in {
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .anim-visible {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ─── Light Mode Overrides ─── */
+  [data-theme="light"] body {
+    background: #E9E6E1;
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] .hero-section {
+    background: #E9E6E1;
+  }
+
+  [data-theme="light"] .hero-bg {
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(255,107,53,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(255,107,53,0.02) 0%, transparent 50%),
+      linear-gradient(180deg, #E9E6E1 0%, #DDD9D3 50%, #E9E6E1 100%);
+  }
+
+  [data-theme="light"] .hero-title .think {
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] .hero-bottom {
+    border-top-color: rgba(10,10,10,0.15);
+  }
+
+  [data-theme="light"] .hero-subtitle-kr {
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] .hero-tagline {
+    color: rgba(10,10,10,0.5);
+  }
+
+  [data-theme="light"] .hero-nav a {
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] .hero-nav a:hover {
+    color: #FF6B35;
+  }
+
+  [data-theme="light"] .section-dark {
+    background: #E9E6E1;
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] .section-light {
+    background: #0A0A0A;
+    color: #E9E6E1;
+  }
+
+  [data-theme="light"] .contact-bg::before {
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(255,107,53,0.06) 0%, transparent 60%),
+      linear-gradient(180deg, #E9E6E1 0%, #DDD9D3 100%);
+  }
+
+  [data-theme="light"] .contact-huge {
+    color: rgba(10,10,10,0.04);
+    -webkit-text-stroke-color: rgba(10,10,10,0.06);
+  }
+
+  [data-theme="light"] .footer-section {
+    background: #E9E6E1;
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] ::-webkit-scrollbar-track { background: #E9E6E1; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    .hamburger { display: flex; }
+
+    .desktop-nav { display: none !important; }
+
+    .hero-content {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero-mascot {
+      width: 120px;
+      height: 120px;
+      align-self: center;
+      margin-top: 1.5rem;
+    }
+
+    .hero-bottom {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .hero-right {
+      text-align: left;
+    }
+
+    .hero-nav {
+      justify-content: flex-start;
+    }
+
+    .nav-link {
+      /* already horizontal */
+    }
+
+    .contact-huge {
+      font-size: clamp(3rem, 18vw, 6rem);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVIGATION ═══════════════════════════════ -->
+<nav class="nav-fixed">
+  <div style="display: flex; justify-content: space-between; padding: 2rem clamp(1.5rem, 4vw, 3rem);">
+    <a href="#hero" class="nav-brand">THINKSMITH</a>
+
+    <div class="desktop-nav" style="display: flex; align-items: flex-start; gap: 1.5rem;">
+      <div class="nav-horizontal">
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#philosophy" class="nav-link">Philosophy</a>
+        <a href="#contact" class="nav-link">Contact</a>
+        <a href="#guestbook" class="nav-link">Guestbook</a>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="iconify" data-icon="lucide:moon" data-width="14"></span>
+      </button>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="theme-toggle mobile-theme-toggle" id="themeToggleMobile" aria-label="Toggle theme" style="pointer-events: auto;">
+        <span class="iconify" data-icon="lucide:moon" data-width="14"></span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#skills" onclick="closeMobileMenu()">Skills</a>
+  <a href="#philosophy" onclick="closeMobileMenu()">Philosophy</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <a href="#guestbook" onclick="closeMobileMenu()">Guestbook</a>
+</div>
+
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero-section" id="hero">
+  <div class="hero-bg"></div>
+
+  <!-- Spark Particles -->
+  <div class="sparks-container" id="sparksContainer"></div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-title">
+        <span class="think">THINK</span>
+        <span class="smith smith-glow">SMITH</span>
+      </div>
+    </div>
+    <div class="hero-mascot">
+      <img src="channels4_profile.jpg" alt="ThinkSmith 마스코트 - 대장장이 고양이">
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-subtitle-kr">사고의 대장장이</div>
+    <div class="hero-right">
+      <p class="hero-tagline">
+        바이브코딩을 통해 일반 사람들이 쉽게<br>
+        자기개발을 할 수 있는 도구를 개발하는 대장장이
+      </p>
+      <div class="hero-nav">
+        <a href="#about">ABOUT ME</a>
+        <a href="#contact">GET IN TOUCH</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ ABOUT ═══════════════════════════════ -->
+<section class="section-light" id="about" style="padding: clamp(4rem, 10vw, 8rem) clamp(2rem, 5vw, 6rem);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start;" class="about-grid">
+      <!-- Left -->
+      <div class="anim-slide-left">
+        <h2 class="about-heading">
+          FORGING<br>
+          IDEAS<br>
+          INTO<br>
+          TOOLS.
+        </h2>
+      </div>
+      <!-- Right -->
+      <div class="anim-slide-right">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: #FF6B35; display: flex; align-items: center; justify-content: center;">
+            <span class="iconify" data-icon="lucide:anvil" data-width="16" style="color: #fff;"></span>
+          </div>
+          <span style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;">ThinkSmith</span>
+        </div>
+        <p class="about-text" data-pretext contenteditable="true">
+          ThinkSmith는 <span class="highlight">사고의 대장장이</span>입니다.<br>
+          <span class="highlight">바이브코딩</span>이라는 새로운 패러다임을 통해,
+          프로그래밍 경험이 없는 사람도 <span class="highlight">자신만의 도구</span>를 만들 수 있도록 돕습니다.<br><br>
+          자기개발, 경제, 기술의 교차점에서 사람들의 <span class="highlight">성장을 촉진</span>하는
+          실질적인 도구와 콘텐츠를 만들어냅니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: clamp(3rem, 6vw, 5rem); border-top: 1px solid rgba(10,10,10,0.1); padding-top: 2rem;" class="stats-grid">
+      <div class="anim-fade-up" style="transition-delay: 0.1s;">
+        <div class="stat-number" data-target="100" data-suffix="+">0</div>
+        <div class="stat-label">Projects Forged</div>
+      </div>
+      <div class="anim-fade-up" style="transition-delay: 0.2s;">
+        <div class="stat-number" data-target="8" data-suffix="">0</div>
+        <div class="stat-label">Developed</div>
+      </div>
+      <div class="anim-fade-up" style="transition-delay: 0.3s;">
+        <div class="stat-number" data-raw="∞">∞</div>
+        <div class="stat-label">Curiosity</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SKILLS ═══════════════════════════════ -->
+<section class="section-dark video-section" id="skills" style="padding: clamp(4rem, 10vw, 8rem) clamp(2rem, 5vw, 6rem);">
+  <div class="video-bg" data-video-trigger>
+    <!-- Replace src with your own video. Pexels free stock placeholder: forge/fire theme -->
+    <video muted loop playsinline preload="none"
+      src="https://videos.pexels.com/video-files/5765290/5765290-uhd_2560_1440_24fps.mp4"
+      poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
+    </video>
+  </div>
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <!-- Header -->
+    <div class="anim-fade-up" style="margin-bottom: clamp(3rem, 6vw, 5rem);">
+      <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.5rem, 3vw, 2.5rem); display: block; margin-bottom: 0.5rem;">What I Forge</span>
+      <span style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5;">INTERESTS &amp; SKILLS</span>
+    </div>
+
+    <!-- Skill 01: Vibe Coding -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 4vw, 4rem); align-items: center; margin-bottom: clamp(4rem, 8vw, 6rem);" class="skill-grid">
+      <div class="anim-slide-left">
+        <div class="skill-number">01</div>
+        <h3 class="skill-title">VIBE CODING</h3>
+        <p class="skill-subtitle">바이브코딩</p>
+        <p class="skill-desc" data-pretext contenteditable="true" style="margin-top: 1.5rem;">
+          코드를 몰라도 아이디어만 있으면 됩니다. AI와 함께 대화하듯 프로그래밍하는
+          바이브코딩으로, 상상을 현실로 만드는 과정을 탐구합니다.
+        </p>
+        <a href="#" class="explore-link" style="margin-top: 1.5rem; display: inline-flex;">
+          Explore More <span style="transition: transform 0.3s;">&rarr;</span>
+        </a>
+      </div>
+      <div class="anim-slide-right">
+        <div class="code-card">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; opacity: 0.4;">
+            <span class="iconify" data-icon="lucide:code-2" data-width="16"></span>
+            <span style="font-family: 'Inter', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;">vibe.js</span>
+          </div>
+          <code style="white-space: pre; color: #E9E6E1;">
+<span class="code-keyword">const</span> <span class="code-var">idea</span> = <span class="code-string">"your vision"</span>;
+<span class="code-keyword">const</span> <span class="code-var">tool</span> = <span class="code-keyword">await</span> forge(idea);
+<span class="code-keyword">const</span> <span class="code-var">impact</span> = tool.share();
+
+<span class="code-comment">// 생각을 도구로 단련하다</span>
+console.log(<span class="code-var">impact</span>); <span class="code-comment">// ∞</span></code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 02: Self Dev (Reversed) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 4vw, 4rem); align-items: center; margin-bottom: clamp(4rem, 8vw, 6rem);" class="skill-grid skill-grid-reversed">
+      <div class="anim-slide-left" style="order: 2;">
+        <div class="skill-number">02</div>
+        <h3 class="skill-title">SELF DEV</h3>
+        <p class="skill-subtitle">자기개발</p>
+        <p class="skill-desc" data-pretext contenteditable="true" style="margin-top: 1.5rem;">
+          진정한 성장은 작은 습관에서 시작됩니다. 독서, 마인드셋, 시스템 구축을 통해
+          매일 조금씩 더 나은 자신을 만들어가는 여정을 나눕니다.
+        </p>
+        <a href="#" class="explore-link" style="margin-top: 1.5rem; display: inline-flex;">
+          Explore More <span>&rarr;</span>
+        </a>
+      </div>
+      <div class="anim-slide-right" style="order: 1;">
+        <div style="background: linear-gradient(135deg, #1A1A1A 0%, #111 100%); border: 1px solid rgba(255,107,53,0.1); border-radius: 12px; aspect-ratio: 4/3; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,107,53,0.3), transparent);"></div>
+          <!-- Replace with your Self Dev image -->
+          <img src="" alt="Self Development" style="width: 100%; height: 100%; object-fit: cover; display: none;" class="skill-img" data-skill="selfdev">
+          <div class="skill-img-placeholder" data-skill="selfdev">
+            <span class="iconify" data-icon="lucide:brain" data-width="48" style="color: rgba(255,107,53,0.3);"></span>
+            <span style="font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(233,230,225,0.3); margin-top: 1rem;">자기개발 이미지를 넣어주세요</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill 03: Economy -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 4vw, 4rem); align-items: center;" class="skill-grid">
+      <div class="anim-slide-left">
+        <div class="skill-number">03</div>
+        <h3 class="skill-title">ECONOMY</h3>
+        <p class="skill-subtitle">경제</p>
+        <p class="skill-desc" data-pretext contenteditable="true" style="margin-top: 1.5rem;">
+          경제적 자유는 지식에서 시작됩니다. 거시경제부터 개인 재무까지,
+          복잡한 경제 개념을 이해하기 쉬운 도구와 인사이트로 변환합니다.
+        </p>
+        <a href="#" class="explore-link" style="margin-top: 1.5rem; display: inline-flex;">
+          Explore More <span>&rarr;</span>
+        </a>
+      </div>
+      <div class="anim-slide-right">
+        <div style="background: linear-gradient(135deg, #1A1A1A 0%, #111 100%); border: 1px solid rgba(255,107,53,0.1); border-radius: 12px; aspect-ratio: 4/3; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,107,53,0.3), transparent);"></div>
+          <!-- Replace with your Economy image -->
+          <img src="" alt="Economy" style="width: 100%; height: 100%; object-fit: cover; display: none;" class="skill-img" data-skill="economy">
+          <div class="skill-img-placeholder" data-skill="economy">
+            <span class="iconify" data-icon="lucide:trending-up" data-width="48" style="color: rgba(255,107,53,0.3);"></span>
+            <span style="font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(233,230,225,0.3); margin-top: 1rem;">경제 이미지를 넣어주세요</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ PHILOSOPHY ═══════════════════════════════ -->
+<section class="section-light" id="philosophy" style="padding: clamp(4rem, 10vw, 8rem) clamp(2rem, 5vw, 6rem);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; margin-bottom: clamp(3rem, 6vw, 5rem);" class="about-grid">
+      <div class="anim-slide-left">
+        <h2 class="philosophy-heading">
+          GROWTH<br>
+          NEVER<br>
+          STOPS.
+        </h2>
+      </div>
+      <div class="anim-slide-right" style="padding-top: 0.5rem;">
+        <p class="about-text" data-pretext contenteditable="true">
+          대장장이는 쇠를 두드려 도구를 만듭니다. 불의 온도를 조절하고,
+          망치질의 리듬을 맞추고, 인내심을 가지고 반복합니다.
+          ThinkSmith도 마찬가지입니다. 생각이라는 원재료를 끊임없이 단련하여,
+          사람들이 실제로 사용할 수 있는 가치 있는 도구로 만들어냅니다.
+          성장에는 끝이 없습니다. 매일의 단련이 곧 내일의 도구가 됩니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- Philosophy Cards -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;" class="philosophy-grid">
+      <div class="philosophy-card anim-scale-in" style="transition-delay: 0.1s;">
+        <span class="iconify" data-icon="lucide:hammer" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Build & Create</div>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">생각을 도구로 만들어 세상에 가치를 더합니다</p>
+      </div>
+      <div class="philosophy-card anim-scale-in" style="transition-delay: 0.2s;">
+        <span class="iconify" data-icon="lucide:book-open" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Learn & Grow</div>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">매일 배우고 성장하며 더 나은 도구를 만듭니다</p>
+      </div>
+      <div class="philosophy-card anim-scale-in" style="transition-delay: 0.3s;">
+        <span class="iconify" data-icon="lucide:share-2" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Share & Connect</div>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">지식을 나누고 함께 성장하는 커뮤니티를 만듭니다</p>
+      </div>
+      <div class="philosophy-card anim-scale-in" style="transition-delay: 0.4s;">
+        <span class="iconify" data-icon="lucide:flame" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Passion & Drive</div>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">꺼지지 않는 열정으로 끊임없이 단련합니다</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ CONTACT ═══════════════════════════════ -->
+<section class="section-dark contact-bg video-section" id="contact" style="padding: clamp(6rem, 12vw, 10rem) clamp(2rem, 5vw, 6rem); text-align: center; position: relative;">
+  <div class="video-bg" data-video-trigger>
+    <!-- Replace src with your own video. Pexels free stock placeholder: abstract/tech theme -->
+    <video muted loop playsinline preload="none"
+      src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4"
+      poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
+    </video>
+  </div>
+  <div style="position: relative; z-index: 2; max-width: 1200px; margin: 0 auto;">
+    <div class="anim-fade-up">
+      <p style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.5; margin-bottom: 1.5rem;">
+        LET'S CONNECT AND BUILD TOGETHER
+      </p>
+    </div>
+
+    <div class="anim-scale-in" style="transition-delay: 0.1s;">
+      <div class="contact-huge">CONTACT</div>
+    </div>
+
+    <div class="anim-fade-up" style="transition-delay: 0.2s;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.1rem, 2vw, 1.6rem); opacity: 0.6; margin-top: 1rem; margin-bottom: 3rem;">
+        함께 만들어 갈 이야기가 있다면, 언제든 연락주세요
+      </p>
+    </div>
+
+    <div class="anim-fade-up" style="transition-delay: 0.3s; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+      <a href="mailto:hello@thinksmith.dev" class="cta-btn">
+        <span class="iconify" data-icon="lucide:mail" data-width="16"></span>
+        Send Email
+      </a>
+      <a href="https://github.com/thinksmith" target="_blank" rel="noopener" class="cta-btn">
+        <span class="iconify" data-icon="lucide:github" data-width="16"></span>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ GUESTBOOK ═══════════════════════════════ -->
+<section class="section-dark" id="guestbook" style="padding: clamp(4rem, 10vw, 8rem) clamp(2rem, 5vw, 6rem); border-top: 1px solid rgba(233,230,225,0.05);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="anim-fade-up" style="margin-bottom: clamp(2rem, 4vw, 3rem);">
+      <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.5rem, 3vw, 2.5rem);">Guestbook</span>
+      <span style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; margin-left: 1rem;">방명록</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 4vw, 3rem);" class="guestbook-grid">
+      <!-- Form -->
+      <div class="anim-slide-left">
+        <form id="guestbookForm" style="display: flex; flex-direction: column; gap: 1rem;">
+          <input type="text" class="guestbook-input" id="gbName" placeholder="이름 / Name" maxlength="50" required>
+          <textarea class="guestbook-input" id="gbMessage" placeholder="메시지를 남겨주세요 / Leave a message..." rows="5" maxlength="500" required style="resize: vertical; min-height: 120px;"></textarea>
+          <button type="submit" class="guestbook-submit">
+            <span class="iconify" data-icon="lucide:send" data-width="14" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;"></span>
+            Leave Message
+          </button>
+        </form>
+      </div>
+
+      <!-- Messages -->
+      <div class="anim-slide-right" id="guestbookMessages" style="display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto; padding-right: 0.5rem;">
+        <!-- Messages will be rendered by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="section-dark footer-section" style="padding: clamp(3rem, 6vw, 4rem) clamp(2rem, 5vw, 6rem) 2rem;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: clamp(2rem, 4vw, 3rem); margin-bottom: 3rem;" class="footer-grid">
+
+      <!-- Brand -->
+      <div>
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.2rem; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+          THINK<span style="color: #FF6B35;">SMITH</span>
+        </div>
+        <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; opacity: 0.5; line-height: 1.6;">
+          사고의 대장장이<br>
+          Forging ideas into tools.
+        </p>
+      </div>
+
+      <!-- Interests -->
+      <div>
+        <div style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; opacity: 0.5;">Interests</div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+          <li><a href="#" style="font-family: 'Inter', sans-serif; font-size: 0.8rem; text-decoration: none; color: inherit; opacity: 0.7; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.7';this.style.color='inherit'">Vibe Coding</a></li>
+          <li><a href="#" style="font-family: 'Inter', sans-serif; font-size: 0.8rem; text-decoration: none; color: inherit; opacity: 0.7; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.7';this.style.color='inherit'">Self Development</a></li>
+          <li><a href="#" style="font-family: 'Inter', sans-serif; font-size: 0.8rem; text-decoration: none; color: inherit; opacity: 0.7; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.7';this.style.color='inherit'">Economy & Finance</a></li>
+          <li><a href="#" style="font-family: 'Inter', sans-serif; font-size: 0.8rem; text-decoration: none; color: inherit; opacity: 0.7; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.7';this.style.color='inherit'">AI & Automation</a></li>
+        </ul>
+      </div>
+
+      <!-- Connect -->
+      <div>
+        <div style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; opacity: 0.5;">Connect</div>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+          <a href="https://github.com/thinksmith" target="_blank" rel="noopener" style="color: inherit; opacity: 0.6; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.6';this.style.color='inherit'">
+            <span class="iconify" data-icon="lucide:github" data-width="20"></span>
+          </a>
+          <a href="mailto:hello@thinksmith.dev" style="color: inherit; opacity: 0.6; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.6';this.style.color='inherit'">
+            <span class="iconify" data-icon="lucide:mail" data-width="20"></span>
+          </a>
+          <a href="#" style="color: inherit; opacity: 0.6; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.6';this.style.color='inherit'">
+            <span class="iconify" data-icon="lucide:twitter" data-width="20"></span>
+          </a>
+          <a href="#" style="color: inherit; opacity: 0.6; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.6';this.style.color='inherit'">
+            <span class="iconify" data-icon="lucide:youtube" data-width="20"></span>
+          </a>
+        </div>
+        <a href="mailto:hello@thinksmith.dev" style="font-family: 'Inter', sans-serif; font-size: 0.75rem; color: inherit; opacity: 0.5; text-decoration: none;">hello@thinksmith.dev</a>
+      </div>
+    </div>
+
+    <!-- Visitor Counter & Copyright -->
+    <div style="border-top: 1px solid rgba(233,230,225,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <p style="font-family: 'Inter', sans-serif; font-size: 0.7rem; opacity: 0.3;">
+        &copy; 2026 ThinkSmith. All rights reserved.
+      </p>
+      <div style="display: flex; align-items: center; gap: 0.5rem; opacity: 0.3;">
+        <span class="iconify" data-icon="lucide:eye" data-width="12"></span>
+        <span style="font-family: 'Inter', sans-serif; font-size: 0.7rem;" id="visitorCount">0</span>
+        <span style="font-family: 'Inter', sans-serif; font-size: 0.7rem;">visitors</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════ SCRIPTS ═══════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  // ─── Utility: Escape HTML (XSS protection) ───
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
+  // ─── Scroll-triggered Video Backgrounds ───
+  const videoTriggers = document.querySelectorAll('[data-video-trigger]');
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target.querySelector('video');
+      if (!video) return;
+      if (entry.isIntersecting) {
+        video.play().catch(() => {});
+        entry.target.classList.add('playing');
+      } else {
+        video.pause();
+        entry.target.classList.remove('playing');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  videoTriggers.forEach(trigger => videoObserver.observe(trigger));
+
+  // ─── Spark Particles (enhanced) ───
+  function createSparks() {
+    const container = document.getElementById('sparksContainer');
+    if (!container) return;
+
+    // Small sparks
+    for (let i = 0; i < 35; i++) {
+      const spark = document.createElement('div');
+      spark.classList.add('spark');
+      if (Math.random() > 0.5) spark.classList.add('spark-ember');
+      spark.style.left = (10 + Math.random() * 80) + '%';
+      spark.style.bottom = Math.random() * 40 + '%';
+      spark.style.setProperty('--drift', (Math.random() - 0.5) * 100 + 'px');
+      spark.style.animationDuration = (2.5 + Math.random() * 3.5) + 's';
+      spark.style.animationDelay = Math.random() * 6 + 's';
+      const size = (4 + Math.random() * 5);
+      spark.style.width = size + 'px';
+      spark.style.height = size + 'px';
+      container.appendChild(spark);
+    }
+
+    // Large ember sparks
+    for (let i = 0; i < 8; i++) {
+      const spark = document.createElement('div');
+      spark.classList.add('spark', 'spark-large', 'spark-ember');
+      spark.style.left = (15 + Math.random() * 70) + '%';
+      spark.style.bottom = Math.random() * 25 + '%';
+      spark.style.setProperty('--drift', (Math.random() - 0.5) * 80 + 'px');
+      spark.style.animationDuration = (3 + Math.random() * 3) + 's';
+      spark.style.animationDelay = Math.random() * 8 + 's';
+      container.appendChild(spark);
+    }
+  }
+  createSparks();
+
+  // ─── Hero Glow Animation (delayed start) ───
+  setTimeout(function() {
+    const smith = document.querySelector('.smith');
+    if (smith) smith.classList.add('smith-glow');
+  }, 1500);
+
+  // ─── Theme Toggle ───
+  const savedTheme = localStorage.getItem('thinksmith-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('thinksmith-theme', next);
+    updateThemeIcon(next);
+  }
+
+  function updateThemeIcon(theme) {
+    const icons = document.querySelectorAll('.theme-toggle .iconify');
+    icons.forEach(function(icon) {
+      icon.setAttribute('data-icon', theme === 'dark' ? 'lucide:moon' : 'lucide:sun');
+    });
+  }
+
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+  document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+  // ─── Mobile Menu ───
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('active');
+    mobileMenu.classList.toggle('active');
+    document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+  });
+
+  window.closeMobileMenu = function() {
+    hamburger.classList.remove('active');
+    mobileMenu.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+
+  // ─── Scroll Animations (IntersectionObserver) ───
+  const animElements = document.querySelectorAll('.anim-fade-up, .anim-slide-left, .anim-slide-right, .anim-scale-in');
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        const delay = entry.target.style.transitionDelay || '0s';
+        entry.target.style.transitionDelay = delay;
+        entry.target.classList.add('anim-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -60px 0px'
+  });
+
+  animElements.forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // ─── Counter Animation ───
+  function animateCounter(el, target, suffix) {
+    let current = 0;
+    const duration = 2000;
+    const increment = target / (duration / 16);
+    const timer = setInterval(function() {
+      current += increment;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      el.textContent = Math.floor(current) + (suffix || '');
+    }, 16);
+  }
+
+  const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+  const statsObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute('data-target'));
+        const suffix = el.getAttribute('data-suffix') || '';
+        animateCounter(el, target, suffix);
+        statsObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  statNumbers.forEach(function(el) {
+    statsObserver.observe(el);
+  });
+
+  // ─── Guestbook ───
+  const GUESTBOOK_KEY = 'thinksmith-guestbook';
+
+  function getMessages() {
+    try {
+      return JSON.parse(localStorage.getItem(GUESTBOOK_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveMessages(messages) {
+    localStorage.setItem(GUESTBOOK_KEY, JSON.stringify(messages));
+  }
+
+  function renderMessages() {
+    const container = document.getElementById('guestbookMessages');
+    const messages = getMessages();
+
+    if (messages.length === 0) {
+      container.innerHTML = '<div style="text-align: center; opacity: 0.3; padding: 3rem 0; font-family: \'Cormorant Garamond\', serif; font-style: italic; font-size: 1.1rem;">아직 메시지가 없습니다.<br>첫 번째 방명록을 남겨주세요!</div>';
+      return;
+    }
+
+    container.innerHTML = messages.slice().reverse().map(function(msg) {
+      return '<div class="message-card">' +
+        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">' +
+          '<span style="font-family: \'Montserrat\', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em;">' + escapeHtml(msg.name) + '</span>' +
+          '<span style="font-family: \'Inter\', sans-serif; font-size: 0.65rem; opacity: 0.3;">' + escapeHtml(msg.date) + '</span>' +
+        '</div>' +
+        '<p style="font-family: \'Inter\', sans-serif; font-size: 0.85rem; line-height: 1.6; opacity: 0.7;">' + escapeHtml(msg.message) + '</p>' +
+      '</div>';
+    }).join('');
+  }
+
+  renderMessages();
+
+  document.getElementById('guestbookForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('gbName').value.trim();
+    const message = document.getElementById('gbMessage').value.trim();
+
+    if (!name || !message) return;
+
+    const messages = getMessages();
+    messages.push({
+      name: name,
+      message: message,
+      date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' })
+    });
+    saveMessages(messages);
+    renderMessages();
+
+    document.getElementById('gbName').value = '';
+    document.getElementById('gbMessage').value = '';
+  });
+
+  // ─── Visitor Counter (daily localStorage) ───
+  function updateVisitorCount() {
+    const COUNTER_KEY = 'thinksmith-visitor-count';
+    const DATE_KEY = 'thinksmith-visitor-date';
+    const today = new Date().toISOString().split('T')[0];
+    let count = parseInt(localStorage.getItem(COUNTER_KEY)) || 0;
+    const lastDate = localStorage.getItem(DATE_KEY);
+
+    if (lastDate !== today) {
+      count++;
+      localStorage.setItem(COUNTER_KEY, count);
+      localStorage.setItem(DATE_KEY, today);
+    }
+
+    document.getElementById('visitorCount').textContent = count.toLocaleString();
+  }
+  updateVisitorCount();
+
+  // ─── Responsive grid adjustments ───
+  const style = document.createElement('style');
+  style.textContent = `
+    @media (max-width: 768px) {
+      .about-grid,
+      .skill-grid,
+      .guestbook-grid,
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .skill-grid-reversed > div:first-child { order: 1 !important; }
+      .skill-grid-reversed > div:last-child { order: 2 !important; }
+      .philosophy-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+      }
+      .mobile-theme-toggle { display: flex !important; }
+    }
+    @media (max-width: 480px) {
+      .philosophy-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+    @media (min-width: 769px) {
+      .mobile-theme-toggle { display: none !important; }
+    }
+  `;
+  document.head.appendChild(style);
+
+})();
+</script>
+
+<!-- Pretext: Dynamic text height computation -->
+<script type="module">
+import { prepare, layout } from 'https://esm.sh/@chenglou/pretext';
+
+await document.fonts.ready;
+
+const pretextElements = document.querySelectorAll('[data-pretext]');
+const prepared = new Map();
+
+for (const el of pretextElements) {
+  const text = el.textContent;
+  const font = getComputedStyle(el).font;
+  prepared.set(el, prepare(text, font));
+}
+
+function relayout() {
+  for (const [el, handle] of prepared) {
+    const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || parseFloat(getComputedStyle(el).fontSize) * 1.5;
+    const { height } = layout(handle, el.clientWidth, lineHeight);
+    if (height > 0) el.style.minHeight = `${height}px`;
+  }
+}
+
+new ResizeObserver(() => relayout()).observe(document.body);
+relayout();
+
+for (const el of pretextElements) {
+  if (el.contentEditable === 'true') {
+    new MutationObserver(() => {
+      const font = getComputedStyle(el).font;
+      prepared.set(el, prepare(el.textContent, font));
+      relayout();
+    }).observe(el, { characterData: true, subtree: true, childList: true });
+  }
+}
+</script>
+
+</body>
+</html>
