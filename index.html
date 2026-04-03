@@ -850,53 +850,81 @@ tailwind.config = {
   }
 
   .gb-messages-panel {
-    background: rgba(233,230,225,0.02);
-    border: 1px solid rgba(233,230,225,0.06);
-    border-radius: 12px;
-    padding: 1.5rem;
-    max-height: 450px;
+    background: linear-gradient(170deg, #D4C5A9 0%, #C7B899 30%, #BFB08A 60%, #C2B390 100%);
+    border-radius: 4px;
+    padding: 2rem 2rem 2rem 2.5rem;
+    max-height: 500px;
     overflow-y: auto;
+    position: relative;
+    box-shadow: 4px 4px 20px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.08);
+    border: 1px solid rgba(160,140,100,0.3);
   }
 
-  .gb-messages-panel::-webkit-scrollbar { width: 4px; }
-  .gb-messages-panel::-webkit-scrollbar-track { background: transparent; }
-  .gb-messages-panel::-webkit-scrollbar-thumb { background: rgba(255,107,53,0.3); border-radius: 2px; }
+  .gb-messages-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: 4px;
+  }
+
+  .gb-messages-panel::after {
+    content: '';
+    position: absolute;
+    left: 2rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(180,60,30,0.15);
+    pointer-events: none;
+  }
+
+  .gb-messages-panel::-webkit-scrollbar { width: 6px; }
+  .gb-messages-panel::-webkit-scrollbar-track { background: rgba(160,140,100,0.2); border-radius: 3px; }
+  .gb-messages-panel::-webkit-scrollbar-thumb { background: rgba(140,120,80,0.4); border-radius: 3px; }
 
   .message-card {
-    background: rgba(233,230,225,0.03);
-    border: 1px solid rgba(233,230,225,0.06);
-    border-radius: 10px;
-    padding: 1.2rem 1.5rem;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(140,120,80,0.15);
+    border-radius: 0;
+    padding: 1rem 0 1rem 0.5rem;
+    transition: all 0.3s;
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
     animation: msgAppear 0.4s ease forwards;
+    position: relative;
+  }
+
+  .message-card:last-child {
+    border-bottom: none;
   }
 
   .message-card:hover {
-    border-color: rgba(255,107,53,0.2);
-    background: rgba(255,107,53,0.03);
+    background: rgba(160,140,100,0.1);
   }
 
-  .msg-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FF6B35 0%, #CC5529 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Montserrat', sans-serif;
+  .msg-name {
+    font-family: 'Cormorant Garamond', serif;
     font-weight: 700;
-    font-size: 0.75rem;
-    color: #fff;
-    flex-shrink: 0;
+    font-size: 1rem;
+    color: #3D2B1F;
+    font-style: italic;
+  }
+
+  .msg-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #4A3728;
+    opacity: 0.85;
   }
 
   .msg-time {
     font-family: 'Inter', sans-serif;
-    font-size: 0.6rem;
-    opacity: 0.25;
+    font-size: 0.55rem;
+    color: rgba(74,55,40,0.35);
     letter-spacing: 0.05em;
   }
 
@@ -908,21 +936,29 @@ tailwind.config = {
   }
 
   .gb-count {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.65rem;
-    opacity: 0.3;
-    letter-spacing: 0.08em;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: rgba(74,55,40,0.4);
     margin-bottom: 1rem;
+    padding-left: 0.5rem;
   }
 
-  [data-theme="light"] .section-dark .message-card {
-    background: rgba(10,10,10,0.03);
-    border-color: rgba(10,10,10,0.06);
+  .gb-parchment-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: rgba(74,55,40,0.5);
+    text-align: center;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(140,120,80,0.2);
   }
 
-  [data-theme="light"] .section-dark .gb-messages-panel {
-    background: rgba(10,10,10,0.02);
-    border-color: rgba(10,10,10,0.06);
+  [data-theme="light"] .gb-messages-panel {
+    box-shadow: 4px 4px 20px rgba(0,0,0,0.15), inset 0 0 40px rgba(0,0,0,0.05);
   }
 
   /* ─── Footer ─── */
@@ -1971,31 +2007,26 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
       return;
     }
 
-    var countHtml = '<div class="gb-count">' + data.length + '개의 기록</div>';
+    var titleHtml = '<div class="gb-parchment-title">Forge Guest Log</div>';
+    var countHtml = '<div class="gb-count">' + data.length + '명의 방문자가 흔적을 남겼습니다</div>';
 
-    container.innerHTML = countHtml + '<div style="display: flex; flex-direction: column; gap: 0.8rem;">' + data.map(function(msg, i) {
-      var initial = msg.name.charAt(0).toUpperCase();
+    container.innerHTML = titleHtml + countHtml + data.map(function(msg, i) {
       var canDelete = isAdmin || myMessageIds.indexOf(msg.id) !== -1;
       var deleteBtn = canDelete ?
-        '<button onclick="deleteMessage(' + msg.id + ')" style="background:none;border:none;cursor:pointer;opacity:0.2;transition:opacity 0.3s;padding:2px;margin-left:0.5rem;" onmouseover="this.style.opacity=\'0.8\'" onmouseout="this.style.opacity=\'0.2\'" title="삭제">' +
-          '<span class="iconify" data-icon="lucide:x" data-width="12" style="color:#FF6B35;"></span>' +
+        '<button onclick="deleteMessage(' + msg.id + ')" style="background:none;border:none;cursor:pointer;opacity:0.2;transition:opacity 0.3s;padding:2px;margin-left:0.5rem;" onmouseover="this.style.opacity=\'0.6\'" onmouseout="this.style.opacity=\'0.2\'" title="삭제">' +
+          '<span class="iconify" data-icon="lucide:x" data-width="12" style="color:#8B4513;"></span>' +
         '</button>' : '';
-      return '<div class="message-card" style="animation-delay: ' + (i * 0.08) + 's;">' +
-        '<div style="display: flex; gap: 1rem; align-items: flex-start;">' +
-          '<div class="msg-avatar">' + escapeHtml(initial) + '</div>' +
-          '<div style="flex: 1; min-width: 0;">' +
-            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">' +
-              '<span style="font-family: \'Montserrat\', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.03em;">' + escapeHtml(msg.name) + '</span>' +
-              '<div style="display: flex; align-items: center;">' +
-                '<span class="msg-time">' + timeAgo(msg.created_at) + '</span>' +
-                deleteBtn +
-              '</div>' +
-            '</div>' +
-            '<p style="font-family: \'Inter\', sans-serif; font-size: 0.82rem; line-height: 1.65; opacity: 0.65;">' + escapeHtml(msg.message) + '</p>' +
+      return '<div class="message-card" style="animation-delay: ' + (i * 0.1) + 's;">' +
+        '<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">' +
+          '<span class="msg-name">' + escapeHtml(msg.name) + '</span>' +
+          '<div style="display: flex; align-items: center;">' +
+            '<span class="msg-time">' + timeAgo(msg.created_at) + '</span>' +
+            deleteBtn +
           '</div>' +
         '</div>' +
+        '<p class="msg-text">"' + escapeHtml(msg.message) + '"</p>' +
       '</div>';
-    }).join('') + '</div>';
+    }).join('');
   }
 
   window.deleteMessage = async function(id) {
