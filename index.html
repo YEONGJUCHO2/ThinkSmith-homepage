@@ -1814,14 +1814,27 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
   });
 
   // ─── Guestbook (Supabase) ───
-  var sb = window.supabase.createClient(
-    'https://dncdzozawmmnlkzdfsht.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuY2R6b3phd21tbmxremRmc2h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTcxMDUsImV4cCI6MjA5MDc5MzEwNX0.70c97Ndt014E_BmDHANLm-2CYQXNSkEShXU2siXaWwc'
-  );
+  var SUPABASE_URL = 'https://dncdzozawmmnlkzdfsht.supabase.co';
+  var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuY2R6b3phd21tbmxremRmc2h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTcxMDUsImV4cCI6MjA5MDc5MzEwNX0.70c97Ndt014E_BmDHANLm-2CYQXNSkEShXU2siXaWwc';
+  var ADMIN_PASS = 'thinksmith2026';
+
+  // Author token: unique per browser
+  var authorToken = localStorage.getItem('gb-author-token');
+  if (!authorToken) {
+    authorToken = crypto.randomUUID();
+    localStorage.setItem('gb-author-token', authorToken);
+  }
+
+  // Track own message IDs
+  var myMessageIds = JSON.parse(localStorage.getItem('gb-my-ids') || '[]');
+
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    global: { headers: { 'x-author-token': authorToken } }
+  });
 
   async function renderMessages() {
     var container = document.getElementById('guestbookMessages');
-    var { data, error } = await sb.from('messages').select('*').order('created_at', { ascending: false });
+    var { data, error } = await sb.from('messages').select('id,name,message,created_at').order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
       container.innerHTML = '<div style="text-align: center; opacity: 0.3; padding: 3rem 0; font-family: \'Cormorant Garamond\', serif; font-style: italic; font-size: 1.1rem;">아직 메시지가 없습니다.<br>첫 번째 방명록을 남겨주세요!</div>';
@@ -1830,14 +1843,17 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
 
     container.innerHTML = data.map(function(msg) {
       var date = new Date(msg.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' });
+      var isMine = myMessageIds.indexOf(msg.id) !== -1;
+      var deleteBtn = isMine ?
+        '<button onclick="deleteMessage(' + msg.id + ')" style="background:none;border:none;cursor:pointer;opacity:0.25;transition:opacity 0.3s;padding:2px;" onmouseover="this.style.opacity=\'0.8\'" onmouseout="this.style.opacity=\'0.25\'" title="삭제">' +
+          '<span class="iconify" data-icon="lucide:x" data-width="14" style="color:#FF6B35;"></span>' +
+        '</button>' : '';
       return '<div class="message-card">' +
         '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">' +
           '<span style="font-family: \'Montserrat\', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em;">' + escapeHtml(msg.name) + '</span>' +
           '<div style="display: flex; align-items: center; gap: 0.75rem;">' +
             '<span style="font-family: \'Inter\', sans-serif; font-size: 0.65rem; opacity: 0.3;">' + escapeHtml(date) + '</span>' +
-            '<button onclick="deleteMessage(' + msg.id + ')" style="background:none;border:none;cursor:pointer;opacity:0.25;transition:opacity 0.3s;padding:2px;" onmouseover="this.style.opacity=\'0.8\'" onmouseout="this.style.opacity=\'0.25\'" title="삭제">' +
-              '<span class="iconify" data-icon="lucide:x" data-width="14" style="color:#FF6B35;"></span>' +
-            '</button>' +
+            deleteBtn +
           '</div>' +
         '</div>' +
         '<p style="font-family: \'Inter\', sans-serif; font-size: 0.85rem; line-height: 1.6; opacity: 0.7;">' + escapeHtml(msg.message) + '</p>' +
@@ -1847,7 +1863,30 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
 
   window.deleteMessage = async function(id) {
     if (!confirm('이 메시지를 삭제할까요?')) return;
-    await sb.from('messages').delete().eq('id', id);
+    var { error } = await sb.from('messages').delete().eq('id', id);
+    if (error) {
+      // If RLS blocks, try admin password
+      var pass = prompt('삭제 권한이 없습니다. 관리자 비밀번호를 입력하세요:');
+      if (pass === ADMIN_PASS) {
+        // Admin: create temp client with admin token header matching the message
+        // For admin, we use a direct REST call
+        await fetch(SUPABASE_URL + '/rest/v1/messages?id=eq.' + id, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'x-author-token': 'admin-override'
+          }
+        });
+      } else if (pass !== null) {
+        alert('비밀번호가 틀렸습니다.');
+        return;
+      } else {
+        return;
+      }
+    }
+    myMessageIds = myMessageIds.filter(function(mid) { return mid !== id; });
+    localStorage.setItem('gb-my-ids', JSON.stringify(myMessageIds));
     renderMessages();
   };
 
@@ -1859,7 +1898,11 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
     var message = document.getElementById('gbMessage').value.trim();
     if (!name || !message) return;
 
-    await sb.from('messages').insert([{ name: name, message: message }]);
+    var { data } = await sb.from('messages').insert([{ name: name, message: message, author_token: authorToken }]).select('id');
+    if (data && data[0]) {
+      myMessageIds.push(data[0].id);
+      localStorage.setItem('gb-my-ids', JSON.stringify(myMessageIds));
+    }
     renderMessages();
 
     document.getElementById('gbName').value = '';
