@@ -229,9 +229,8 @@ tailwind.config = {
     width: clamp(200px, 25vw, 400px);
     height: clamp(200px, 25vw, 400px);
     border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid rgba(255,107,53,0.3);
-    box-shadow: 0 0 40px rgba(255,107,53,0.15), 0 0 80px rgba(255,107,53,0.08), 0 0 120px rgba(255,107,53,0.04);
+    overflow: visible;
+    border: none;
     opacity: 0;
     animation: fadeUp 1s ease 0.7s forwards;
     position: relative;
@@ -242,6 +241,8 @@ tailwind.config = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255,107,53,0.25);
   }
 
   .hero-mascot .mascot-placeholder {
@@ -284,51 +285,48 @@ tailwind.config = {
     text-transform: uppercase;
     position: relative;
     z-index: 2;
+    text-shadow: 0 6px 30px rgba(0,0,0,0.7), 0 2px 10px rgba(0,0,0,0.5);
   }
 
-  .hero-title .think {
+  .hero-logo-text .think {
     color: #FFFFFF;
     display: block;
     opacity: 0;
-    transform: translateY(60px);
-    animation: heroReveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+    transform: translateY(-30px) scaleY(1.3);
+    animation: anvilStrike 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s forwards;
   }
 
-  .hero-title .smith {
+  .hero-logo-text .smith {
     color: #FF6B35;
     display: block;
     opacity: 0;
-    transform: translateY(60px);
-    animation: heroReveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
+    transform: translateY(-30px) scaleY(1.3);
+    animation: anvilStrike 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 0.7s forwards;
     text-shadow:
       0 0 40px rgba(255,107,53,0.3),
       0 0 80px rgba(255,107,53,0.1);
   }
 
-  @keyframes heroReveal {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
-  @keyframes anvilGlow {
-    0%, 100% {
-      text-shadow:
-        0 0 40px rgba(255,107,53,0.3),
-        0 0 80px rgba(255,107,53,0.1);
+  @keyframes anvilStrike {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px) scaleY(1.3);
     }
     50% {
-      text-shadow:
-        0 0 60px rgba(255,107,53,0.5),
-        0 0 120px rgba(255,107,53,0.2),
-        0 0 180px rgba(255,107,53,0.05);
+      opacity: 1;
+      transform: translateY(4px) scaleY(0.95);
+    }
+    70% {
+      transform: translateY(-2px) scaleY(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scaleY(1);
     }
   }
 
-  .smith-glow {
-    animation: anvilGlow 3s ease-in-out infinite;
-  }
+
 
   .hero-bottom {
     position: relative;
@@ -347,9 +345,10 @@ tailwind.config = {
   .hero-subtitle-kr {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: clamp(1.1rem, 2vw, 1.8rem);
+    font-size: clamp(1.4rem, 2.5vw, 2.2rem);
     color: #E9E6E1;
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: 0.05em;
   }
 
   .hero-right {
@@ -359,11 +358,10 @@ tailwind.config = {
 
   .hero-tagline {
     font-family: 'Pretendard Variable', 'Inter', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    line-height: 1.8;
-    color: rgba(233,230,225,0.6);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    line-height: 1.9;
+    color: rgba(233,230,225,0.55);
     margin-bottom: 1.5rem;
   }
 
@@ -385,6 +383,23 @@ tailwind.config = {
   }
 
   .hero-nav a:hover { color: #FF6B35; }
+
+  /* ─── Section Transitions ─── */
+  .transition-dark-to-light {
+    background: linear-gradient(180deg, #0A0A0A 0%, #E9E6E1 100%);
+  }
+
+  .transition-light-to-dark {
+    background: linear-gradient(180deg, #E9E6E1 0%, #0A0A0A 100%);
+  }
+
+  [data-theme="light"] .transition-dark-to-light {
+    background: linear-gradient(180deg, #E9E6E1 0%, #0A0A0A 100%);
+  }
+
+  [data-theme="light"] .transition-light-to-dark {
+    background: linear-gradient(180deg, #0A0A0A 0%, #E9E6E1 100%);
+  }
 
   /* ─── Spark Particles ─── */
   /* ─── Scroll Video Background ─── */
@@ -425,59 +440,15 @@ tailwind.config = {
     z-index: 2;
   }
 
-  [data-theme="light"] .video-bg.playing video {
-    opacity: 0.08;
+  [data-theme="light"] .video-bg {
+    display: none;
   }
 
-  .sparks-container {
+  .sparks-canvas {
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    overflow: hidden;
-  }
-
-  .spark {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #FF6B35;
-    border-radius: 50%;
-    opacity: 0;
-    animation: sparkFloat ease-out infinite;
-    box-shadow: 0 0 12px rgba(255,107,53,0.8), 0 0 24px rgba(255,107,53,0.4), 0 0 48px rgba(255,107,53,0.15);
-  }
-
-  .spark.spark-large {
-    width: 10px;
-    height: 10px;
-    box-shadow: 0 0 20px rgba(255,107,53,0.9), 0 0 40px rgba(255,107,53,0.5), 0 0 80px rgba(255,107,53,0.2);
-  }
-
-  .spark.spark-ember {
-    background: radial-gradient(circle, #FF6B35 30%, #FF4500 70%, transparent 100%);
-    filter: blur(0.5px);
-  }
-
-  @keyframes sparkFloat {
-    0% {
-      opacity: 0;
-      transform: translateY(0) translateX(0) scale(0.5);
-    }
-    8% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.8;
-    }
-    80% {
-      opacity: 0.3;
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(-400px) translateX(var(--drift)) scale(0);
-    }
   }
 
   /* ─── About Section (Light) ─── */
@@ -548,7 +519,7 @@ tailwind.config = {
     font-family: 'Montserrat', sans-serif;
     font-weight: 200;
     font-size: clamp(3rem, 6vw, 5rem);
-    color: rgba(233,230,225,0.08);
+    color: rgba(233,230,225,0.15);
     line-height: 1;
   }
 
@@ -724,14 +695,14 @@ tailwind.config = {
   .contact-huge {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
-    font-size: clamp(4rem, 15vw, 18rem);
+    font-size: clamp(3rem, 8vw, 7rem);
     text-transform: uppercase;
-    letter-spacing: -0.04em;
-    line-height: 0.85;
-    color: rgba(233,230,225,0.15);
-    -webkit-text-stroke: 1.5px rgba(255,107,53,0.3);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: #E9E6E1;
+    -webkit-text-stroke: none;
     user-select: none;
-    text-shadow: 0 0 60px rgba(255,107,53,0.08);
+    margin-bottom: 0.5rem;
   }
 
   .cta-btn {
@@ -909,6 +880,60 @@ tailwind.config = {
     }
   }
 
+  /* ─── Scroll Indicator ─── */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.5s forwards;
+  }
+
+  .scroll-indicator .scroll-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #FF6B35;
+  }
+
+  .scroll-chevron {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+
+  .scroll-chevron svg {
+    width: 20px;
+    height: 10px;
+    opacity: 0.5;
+  }
+
+  .scroll-chevron svg:first-child {
+    opacity: 0.8;
+  }
+
+  .scroll-chevron svg path {
+    stroke: #FF6B35;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
   /* ─── Light Mode Overrides ─── */
   [data-theme="light"] body {
     background: #E9E6E1;
@@ -924,6 +949,14 @@ tailwind.config = {
       radial-gradient(ellipse at 30% 50%, rgba(255,107,53,0.04) 0%, transparent 60%),
       radial-gradient(ellipse at 70% 80%, rgba(255,107,53,0.02) 0%, transparent 50%),
       linear-gradient(180deg, #E9E6E1 0%, #DDD9D3 50%, #E9E6E1 100%);
+  }
+
+  [data-theme="light"] .hero-logo-img {
+    display: none !important;
+  }
+
+  [data-theme="light"] .hero-logo-text {
+    display: block !important;
   }
 
   [data-theme="light"] .hero-title .think {
@@ -950,6 +983,11 @@ tailwind.config = {
     color: #FF6B35;
   }
 
+  [data-theme="light"] .section-light + .section-light,
+  [data-theme="light"] .hero-section + div + .section-light {
+    /* light mode gradient transition handled inline */
+  }
+
   [data-theme="light"] .section-dark {
     background: #E9E6E1;
     color: #0A0A0A;
@@ -960,15 +998,30 @@ tailwind.config = {
     color: #E9E6E1;
   }
 
+  [data-theme="light"] .contact-bg {
+    background: #E9E6E1 !important;
+  }
+
   [data-theme="light"] .contact-bg::before {
-    background:
-      radial-gradient(ellipse at 50% 100%, rgba(255,107,53,0.06) 0%, transparent 60%),
-      linear-gradient(180deg, #E9E6E1 0%, #DDD9D3 100%);
+    display: none !important;
+  }
+
+  [data-theme="light"] .contact-bg .video-bg {
+    display: none !important;
   }
 
   [data-theme="light"] .contact-huge {
-    color: rgba(10,10,10,0.04);
-    -webkit-text-stroke-color: rgba(10,10,10,0.06);
+    color: #0A0A0A;
+  }
+
+  [data-theme="light"] .section-dark p,
+  [data-theme="light"] .section-dark span:not(.iconify),
+  [data-theme="light"] .section-dark div {
+    color: inherit;
+  }
+
+  [data-theme="light"] .section-dark .highlight {
+    color: #CC5529;
   }
 
   [data-theme="light"] .footer-section {
@@ -990,10 +1043,14 @@ tailwind.config = {
     }
 
     .hero-mascot {
-      width: 120px;
-      height: 120px;
+      width: 180px;
+      height: 180px;
       align-self: center;
       margin-top: 1.5rem;
+    }
+
+    .scroll-indicator {
+      bottom: 1.5rem;
     }
 
     .hero-bottom {
@@ -1064,14 +1121,19 @@ tailwind.config = {
 <section class="hero-section" id="hero">
   <div class="hero-bg"></div>
 
-  <!-- Spark Particles -->
-  <div class="sparks-container" id="sparksContainer"></div>
+  <!-- Forge Sparks -->
+  <canvas class="sparks-canvas" id="sparksCanvas"></canvas>
 
   <div class="hero-content">
     <div class="hero-left">
       <div class="hero-title">
-        <span class="think">THINK</span>
-        <span class="smith smith-glow">SMITH</span>
+        <!-- Dark mode: logo image -->
+        <img src="ThinkSmith로고-Photoroom.png" alt="THINKSMITH" class="hero-logo-img" style="width: 100%; max-width: clamp(300px, 50vw, 700px); opacity: 0; transform: translateY(-30px) scaleY(1.3); animation: anvilStrike 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s forwards;">
+        <!-- Light mode: text fallback -->
+        <div class="hero-logo-text" style="display: none;">
+          <span class="think">THINK</span>
+          <span class="smith">SMITH</span>
+        </div>
       </div>
     </div>
     <div class="hero-mascot">
@@ -1092,12 +1154,28 @@ tailwind.config = {
       </div>
     </div>
   </div>
+
+  <div class="scroll-indicator">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-chevron">
+      <svg viewBox="0 0 20 10"><path d="M2 2 L10 8 L18 2"/></svg>
+      <svg viewBox="0 0 20 10"><path d="M2 2 L10 8 L18 2"/></svg>
+    </div>
+  </div>
 </section>
 
 
 <!-- ═══════════════════════════════ ABOUT ═══════════════════════════════ -->
-<section class="section-light" id="about" style="padding: clamp(4rem, 10vw, 8rem) clamp(2rem, 5vw, 6rem);">
+<div class="transition-dark-to-light" style="height: 80px;"></div>
+<section class="section-light" id="about" style="padding: clamp(3rem, 8vw, 6rem) clamp(2rem, 5vw, 6rem);">
   <div style="max-width: 1200px; margin: 0 auto;">
+
+    <!-- Section Label -->
+    <div class="anim-fade-up" style="margin-bottom: clamp(2rem, 4vw, 3rem);">
+      <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.5rem, 3vw, 2.5rem); display: block; margin-bottom: 0.5rem;">About Me</span>
+      <span style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4;">WHO IS THINKSMITH</span>
+    </div>
+
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start;" class="about-grid">
       <!-- Left -->
       <div class="anim-slide-left">
@@ -1109,13 +1187,7 @@ tailwind.config = {
         </h2>
       </div>
       <!-- Right -->
-      <div class="anim-slide-right">
-        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: #FF6B35; display: flex; align-items: center; justify-content: center;">
-            <span class="iconify" data-icon="lucide:anvil" data-width="16" style="color: #fff;"></span>
-          </div>
-          <span style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;">ThinkSmith</span>
-        </div>
+      <div class="anim-slide-right" style="padding-top: 0.5rem;">
         <p class="about-text" data-pretext contenteditable="true">
           ThinkSmith는 <span class="highlight">사고의 대장장이</span>입니다.<br>
           <span class="highlight">바이브코딩</span>이라는 새로운 패러다임을 통해,
@@ -1130,20 +1202,23 @@ tailwind.config = {
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: clamp(3rem, 6vw, 5rem); border-top: 1px solid rgba(10,10,10,0.1); padding-top: 2rem;" class="stats-grid">
       <div class="anim-fade-up" style="transition-delay: 0.1s;">
         <div class="stat-number" data-target="100" data-suffix="+">0</div>
-        <div class="stat-label">Projects Forged</div>
+        <div class="stat-label">만들어본 프로젝트</div>
       </div>
       <div class="anim-fade-up" style="transition-delay: 0.2s;">
-        <div class="stat-number" data-target="8" data-suffix="">0</div>
-        <div class="stat-label">Developed</div>
+        <div class="stat-number" data-target="8" data-suffix="개">0</div>
+        <div class="stat-label">출시한 서비스</div>
       </div>
       <div class="anim-fade-up" style="transition-delay: 0.3s;">
         <div class="stat-number" data-raw="∞">∞</div>
-        <div class="stat-label">Curiosity</div>
+        <div class="stat-label">끝없는 호기심</div>
       </div>
     </div>
   </div>
 </section>
 
+
+<!-- About → Skills transition -->
+<div class="transition-light-to-dark" style="height: 80px;"></div>
 
 <!-- ═══════════════════════════════ SKILLS ═══════════════════════════════ -->
 <section class="section-dark video-section" id="skills" style="padding: clamp(4rem, 10vw, 8rem) clamp(2rem, 5vw, 6rem);">
@@ -1169,12 +1244,12 @@ tailwind.config = {
         <h3 class="skill-title">VIBE CODING</h3>
         <p class="skill-subtitle">바이브코딩</p>
         <p class="skill-desc" data-pretext contenteditable="true" style="margin-top: 1.5rem;">
-          코드를 몰라도 아이디어만 있으면 됩니다. AI와 함께 대화하듯 프로그래밍하는
-          바이브코딩으로, 상상을 현실로 만드는 과정을 탐구합니다.
+          코드를 몰라도 <span class="highlight">아이디어</span>만 있으면 됩니다. AI와 함께 대화하듯 프로그래밍하는
+          <span class="highlight">바이브코딩</span>으로, <span class="highlight">상상을 현실로</span> 만드는 과정을 탐구합니다.
         </p>
-        <a href="#" class="explore-link" style="margin-top: 1.5rem; display: inline-flex;">
-          Explore More <span style="transition: transform 0.3s;">&rarr;</span>
-        </a>
+        <span class="explore-link" style="margin-top: 1.5rem; display: inline-flex; cursor: default; opacity: 0.5;">
+          Coming Soon &rarr;
+        </span>
       </div>
       <div class="anim-slide-right">
         <div class="code-card">
@@ -1200,22 +1275,17 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
         <h3 class="skill-title">SELF DEV</h3>
         <p class="skill-subtitle">자기개발</p>
         <p class="skill-desc" data-pretext contenteditable="true" style="margin-top: 1.5rem;">
-          진정한 성장은 작은 습관에서 시작됩니다. 독서, 마인드셋, 시스템 구축을 통해
-          매일 조금씩 더 나은 자신을 만들어가는 여정을 나눕니다.
+          진정한 성장은 <span class="highlight">작은 습관</span>에서 시작됩니다. 독서, 마인드셋, 시스템 구축을 통해
+          매일 조금씩 <span class="highlight">더 나은 자신</span>을 만들어가는 여정을 나눕니다.
         </p>
-        <a href="#" class="explore-link" style="margin-top: 1.5rem; display: inline-flex;">
-          Explore More <span>&rarr;</span>
-        </a>
+        <span class="explore-link" style="margin-top: 1.5rem; display: inline-flex; cursor: default; opacity: 0.5;">
+          Coming Soon &rarr;
+        </span>
       </div>
       <div class="anim-slide-right" style="order: 1;">
-        <div style="background: linear-gradient(135deg, #1A1A1A 0%, #111 100%); border: 1px solid rgba(255,107,53,0.1); border-radius: 12px; aspect-ratio: 4/3; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, #1A1A1A 0%, #111 100%); border: 1px solid rgba(255,107,53,0.1); border-radius: 12px; aspect-ratio: 4/3; position: relative; overflow: hidden;">
           <div style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,107,53,0.3), transparent);"></div>
-          <!-- Replace with your Self Dev image -->
-          <img src="" alt="Self Development" style="width: 100%; height: 100%; object-fit: cover; display: none;" class="skill-img" data-skill="selfdev">
-          <div class="skill-img-placeholder" data-skill="selfdev">
-            <span class="iconify" data-icon="lucide:brain" data-width="48" style="color: rgba(255,107,53,0.3);"></span>
-            <span style="font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(233,230,225,0.3); margin-top: 1rem;">자기개발 이미지를 넣어주세요</span>
-          </div>
+          <img src="forge.png" alt="Self Development" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
         </div>
       </div>
     </div>
@@ -1227,22 +1297,17 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
         <h3 class="skill-title">ECONOMY</h3>
         <p class="skill-subtitle">경제</p>
         <p class="skill-desc" data-pretext contenteditable="true" style="margin-top: 1.5rem;">
-          경제적 자유는 지식에서 시작됩니다. 거시경제부터 개인 재무까지,
-          복잡한 경제 개념을 이해하기 쉬운 도구와 인사이트로 변환합니다.
+          <span class="highlight">경제적 자유</span>는 지식에서 시작됩니다. 거시경제부터 개인 재무까지,
+          복잡한 경제 개념을 <span class="highlight">이해하기 쉬운 도구와 인사이트</span>로 변환합니다.
         </p>
-        <a href="#" class="explore-link" style="margin-top: 1.5rem; display: inline-flex;">
-          Explore More <span>&rarr;</span>
-        </a>
+        <span class="explore-link" style="margin-top: 1.5rem; display: inline-flex; cursor: default; opacity: 0.5;">
+          Coming Soon &rarr;
+        </span>
       </div>
       <div class="anim-slide-right">
-        <div style="background: linear-gradient(135deg, #1A1A1A 0%, #111 100%); border: 1px solid rgba(255,107,53,0.1); border-radius: 12px; aspect-ratio: 4/3; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, #1A1A1A 0%, #111 100%); border: 1px solid rgba(255,107,53,0.1); border-radius: 12px; aspect-ratio: 4/3; position: relative; overflow: hidden;">
           <div style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,107,53,0.3), transparent);"></div>
-          <!-- Replace with your Economy image -->
-          <img src="" alt="Economy" style="width: 100%; height: 100%; object-fit: cover; display: none;" class="skill-img" data-skill="economy">
-          <div class="skill-img-placeholder" data-skill="economy">
-            <span class="iconify" data-icon="lucide:trending-up" data-width="48" style="color: rgba(255,107,53,0.3);"></span>
-            <span style="font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(233,230,225,0.3); margin-top: 1rem;">경제 이미지를 넣어주세요</span>
-          </div>
+          <img src="gear.png" alt="Economy" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
         </div>
       </div>
     </div>
@@ -1250,6 +1315,9 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
   </div>
 </section>
 
+
+<!-- Skills → Philosophy transition -->
+<div class="transition-dark-to-light" style="height: 80px;"></div>
 
 <!-- ═══════════════════════════════ PHILOSOPHY ═══════════════════════════════ -->
 <section class="section-light" id="philosophy" style="padding: clamp(4rem, 10vw, 8rem) clamp(2rem, 5vw, 6rem);">
@@ -1264,11 +1332,11 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
       </div>
       <div class="anim-slide-right" style="padding-top: 0.5rem;">
         <p class="about-text" data-pretext contenteditable="true">
-          대장장이는 쇠를 두드려 도구를 만듭니다. 불의 온도를 조절하고,
-          망치질의 리듬을 맞추고, 인내심을 가지고 반복합니다.
-          ThinkSmith도 마찬가지입니다. 생각이라는 원재료를 끊임없이 단련하여,
+          대장장이는 쇠를 두드려 도구를 만듭니다. <span class="highlight">불의 온도</span>를 조절하고,
+          <span class="highlight">망치질의 리듬</span>을 맞추고, 인내심을 가지고 반복합니다.
+          ThinkSmith도 마찬가지입니다. 생각이라는 원재료를 <span class="highlight">끊임없이 단련</span>하여,
           사람들이 실제로 사용할 수 있는 가치 있는 도구로 만들어냅니다.
-          성장에는 끝이 없습니다. 매일의 단련이 곧 내일의 도구가 됩니다.
+          성장에는 끝이 없습니다. <span class="highlight">매일의 단련</span>이 곧 내일의 도구가 됩니다.
         </p>
       </div>
     </div>
@@ -1278,27 +1346,30 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
       <div class="philosophy-card anim-scale-in" style="transition-delay: 0.1s;">
         <span class="iconify" data-icon="lucide:hammer" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
         <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Build & Create</div>
-        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">생각을 도구로 만들어 세상에 가치를 더합니다</p>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">머릿속 아이디어를 실제 작동하는 도구로. 생각만 하지 않고 직접 만듭니다.</p>
       </div>
       <div class="philosophy-card anim-scale-in" style="transition-delay: 0.2s;">
         <span class="iconify" data-icon="lucide:book-open" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
         <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Learn & Grow</div>
-        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">매일 배우고 성장하며 더 나은 도구를 만듭니다</p>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">어제보다 1%만 더. 독서, 실험, 회고를 통해 꾸준히 성장합니다.</p>
       </div>
       <div class="philosophy-card anim-scale-in" style="transition-delay: 0.3s;">
         <span class="iconify" data-icon="lucide:share-2" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
         <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Share & Connect</div>
-        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">지식을 나누고 함께 성장하는 커뮤니티를 만듭니다</p>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">혼자 알면 지식, 나누면 도구. 배운 것을 콘텐츠로 만들어 공유합니다.</p>
       </div>
       <div class="philosophy-card anim-scale-in" style="transition-delay: 0.4s;">
         <span class="iconify" data-icon="lucide:flame" data-width="24" style="color: #FF6B35; display: block; margin-bottom: 1rem;"></span>
         <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;">Passion & Drive</div>
-        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">꺼지지 않는 열정으로 끊임없이 단련합니다</p>
+        <p style="font-family: 'Pretendard Variable', sans-serif; font-size: 0.8rem; line-height: 1.6; opacity: 0.6;">대장장이의 화로처럼 꺼지지 않는 열정. 흥미가 곧 원동력입니다.</p>
       </div>
     </div>
   </div>
 </section>
 
+
+<!-- Philosophy → Contact transition -->
+<div class="transition-light-to-dark" style="height: 80px;"></div>
 
 <!-- ═══════════════════════════════ CONTACT ═══════════════════════════════ -->
 <section class="section-dark contact-bg video-section" id="contact" style="padding: clamp(6rem, 12vw, 10rem) clamp(2rem, 5vw, 6rem); text-align: center; position: relative;">
@@ -1310,23 +1381,24 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
     </video>
   </div>
   <div style="position: relative; z-index: 2; max-width: 1200px; margin: 0 auto;">
-    <div class="anim-fade-up">
-      <p style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.5; margin-bottom: 1.5rem;">
-        LET'S CONNECT AND BUILD TOGETHER
-      </p>
-    </div>
 
-    <div class="anim-scale-in" style="transition-delay: 0.1s;">
+    <div class="anim-scale-in">
       <div class="contact-huge">CONTACT</div>
     </div>
 
-    <div class="anim-fade-up" style="transition-delay: 0.2s;">
-      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.1rem, 2vw, 1.6rem); opacity: 0.6; margin-top: 1rem; margin-bottom: 3rem;">
-        함께 만들어 갈 이야기가 있다면, 언제든 연락주세요
+    <div class="anim-fade-up" style="transition-delay: 0.1s; margin-top: 2rem; margin-bottom: 1rem;">
+      <p style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #FF6B35;">
+        함께 만들어갑시다
       </p>
     </div>
 
-    <div class="anim-fade-up" style="transition-delay: 0.3s; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+    <div class="anim-fade-up" style="transition-delay: 0.15s;">
+      <p style="font-family: 'Pretendard Variable', 'Inter', sans-serif; font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.9; opacity: 0.55; max-width: 550px; margin: 0 auto 2.5rem;">
+        바이브코딩에 관심이 있거나, 함께 만들어 갈 이야기가 있다면 언제든 연락주세요. 아이디어를 나누고 함께 성장하고 싶습니다.
+      </p>
+    </div>
+
+    <div class="anim-fade-up" style="transition-delay: 0.25s; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem;">
       <a href="mailto:hello@thinksmith.dev" class="cta-btn">
         <span class="iconify" data-icon="lucide:mail" data-width="16"></span>
         Send Email
@@ -1335,6 +1407,22 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
         <span class="iconify" data-icon="lucide:github" data-width="16"></span>
         GitHub
       </a>
+    </div>
+
+    <!-- Contact info -->
+    <div class="anim-fade-up" style="transition-delay: 0.35s; display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; padding-top: 2rem; border-top: 1px solid rgba(233,230,225,0.08);">
+      <div style="text-align: center;">
+        <div style="font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.3; margin-bottom: 0.5rem;">Email</div>
+        <a href="mailto:hello@thinksmith.dev" style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #E9E6E1; text-decoration: none; opacity: 0.7; transition: color 0.3s;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#E9E6E1'">hello@thinksmith.dev</a>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.3; margin-bottom: 0.5rem;">Based in</div>
+        <span style="font-family: 'Inter', sans-serif; font-size: 0.85rem; opacity: 0.7;">Seoul, South Korea</span>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.3; margin-bottom: 0.5rem;">Response</div>
+        <span style="font-family: 'Inter', sans-serif; font-size: 0.85rem; opacity: 0.7;">Within 24 hours</span>
+      </div>
     </div>
   </div>
 </section>
@@ -1355,7 +1443,7 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
         <form id="guestbookForm" style="display: flex; flex-direction: column; gap: 1rem;">
           <input type="text" class="guestbook-input" id="gbName" placeholder="이름 / Name" maxlength="50" required>
           <textarea class="guestbook-input" id="gbMessage" placeholder="메시지를 남겨주세요 / Leave a message..." rows="5" maxlength="500" required style="resize: vertical; min-height: 120px;"></textarea>
-          <button type="submit" class="guestbook-submit">
+          <button type="submit" class="guestbook-submit" style="align-self: flex-start;">
             <span class="iconify" data-icon="lucide:send" data-width="14" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;"></span>
             Leave Message
           </button>
@@ -1408,12 +1496,12 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
           <a href="mailto:hello@thinksmith.dev" style="color: inherit; opacity: 0.6; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.6';this.style.color='inherit'">
             <span class="iconify" data-icon="lucide:mail" data-width="20"></span>
           </a>
-          <a href="#" style="color: inherit; opacity: 0.6; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.6';this.style.color='inherit'">
+          <span style="color: inherit; opacity: 0.25; cursor: default;">
             <span class="iconify" data-icon="lucide:twitter" data-width="20"></span>
-          </a>
-          <a href="#" style="color: inherit; opacity: 0.6; transition: opacity 0.3s, color 0.3s;" onmouseover="this.style.opacity='1';this.style.color='#FF6B35'" onmouseout="this.style.opacity='0.6';this.style.color='inherit'">
+          </span>
+          <span style="color: inherit; opacity: 0.25; cursor: default;">
             <span class="iconify" data-icon="lucide:youtube" data-width="20"></span>
-          </a>
+          </span>
         </div>
         <a href="mailto:hello@thinksmith.dev" style="font-family: 'Inter', sans-serif; font-size: 0.75rem; color: inherit; opacity: 0.5; text-decoration: none;">hello@thinksmith.dev</a>
       </div>
@@ -1464,46 +1552,126 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
 
   videoTriggers.forEach(trigger => videoObserver.observe(trigger));
 
-  // ─── Spark Particles (enhanced) ───
-  function createSparks() {
-    const container = document.getElementById('sparksContainer');
-    if (!container) return;
+  // ─── Forge Sparks (Canvas Physics) ───
+  (function() {
+    var canvas = document.getElementById('sparksCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var sparks = [];
+    var W, H;
 
-    // Small sparks
-    for (let i = 0; i < 35; i++) {
-      const spark = document.createElement('div');
-      spark.classList.add('spark');
-      if (Math.random() > 0.5) spark.classList.add('spark-ember');
-      spark.style.left = (10 + Math.random() * 80) + '%';
-      spark.style.bottom = Math.random() * 40 + '%';
-      spark.style.setProperty('--drift', (Math.random() - 0.5) * 100 + 'px');
-      spark.style.animationDuration = (2.5 + Math.random() * 3.5) + 's';
-      spark.style.animationDelay = Math.random() * 6 + 's';
-      const size = (4 + Math.random() * 5);
-      spark.style.width = size + 'px';
-      spark.style.height = size + 'px';
-      container.appendChild(spark);
+    function resize() {
+      var hero = canvas.parentElement;
+      W = hero.offsetWidth;
+      H = hero.offsetHeight;
+      canvas.width = W * devicePixelRatio;
+      canvas.height = H * devicePixelRatio;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Spawn rising embers - like bonfire sparks floating upward
+    function burst(count, originX, originY) {
+      for (var i = 0; i < count; i++) {
+        var bright = Math.random();
+        var speed = 30 + Math.random() * 80;
+        sparks.push({
+          x: originX + (Math.random() - 0.5) * 100,
+          y: originY,
+          vx: (Math.random() - 0.5) * 30,
+          vy: -speed,  // upward
+          life: 1,
+          decay: 0.003 + Math.random() * 0.006,
+          size: 1.5 + Math.random() * 2.5,
+          r: bright > 0.6 ? 255 : (200 + Math.random() * 55),
+          g: bright > 0.6 ? (140 + Math.random() * 80) : (60 + Math.random() * 50),
+          b: bright > 0.6 ? (60 + Math.random() * 40) : (10 + Math.random() * 20),
+          gravity: -8 - Math.random() * 12,  // negative = upward pull (hot air rising)
+          drag: 0.995,
+          wobbleAmp: 0.3 + Math.random() * 0.8,
+          wobbleSpeed: 2 + Math.random() * 3,
+          wobbleOffset: Math.random() * Math.PI * 2
+        });
+      }
     }
 
-    // Large ember sparks
-    for (let i = 0; i < 8; i++) {
-      const spark = document.createElement('div');
-      spark.classList.add('spark', 'spark-large', 'spark-ember');
-      spark.style.left = (15 + Math.random() * 70) + '%';
-      spark.style.bottom = Math.random() * 25 + '%';
-      spark.style.setProperty('--drift', (Math.random() - 0.5) * 80 + 'px');
-      spark.style.animationDuration = (3 + Math.random() * 3) + 's';
-      spark.style.animationDelay = Math.random() * 8 + 's';
-      container.appendChild(spark);
+    // Continuous stream from bottom
+    var nextSpawn = 0;
+    function spawnAmbient(time) {
+      if (time > nextSpawn) {
+        var count = 1 + Math.floor(Math.random() * 3);
+        var ox = W * (0.15 + Math.random() * 0.7);
+        burst(count, ox, H * 0.95);
+        nextSpawn = time + 100 + Math.random() * 300;
+      }
     }
-  }
-  createSparks();
 
-  // ─── Hero Glow Animation (delayed start) ───
-  setTimeout(function() {
-    const smith = document.querySelector('.smith');
-    if (smith) smith.classList.add('smith-glow');
-  }, 1500);
+    // Periodic bigger puffs
+    var nextBurst = 1500;
+    function spawnBurst(time) {
+      if (time > nextBurst) {
+        var ox = W * (0.2 + Math.random() * 0.6);
+        burst(4 + Math.floor(Math.random() * 6), ox, H * 0.95);
+        nextBurst = time + 1500 + Math.random() * 3000;
+      }
+    }
+
+    var globalTime = 0;
+    function update(dt) {
+      globalTime += dt;
+      for (var i = sparks.length - 1; i >= 0; i--) {
+        var s = sparks[i];
+        // Upward pull + gentle wobble sideways
+        s.vy += s.gravity * dt;
+        s.vx += Math.sin(globalTime * s.wobbleSpeed + s.wobbleOffset) * s.wobbleAmp;
+        s.vx *= s.drag;
+        s.vy *= s.drag;
+        s.x += s.vx * dt;
+        s.y += s.vy * dt;
+        s.life -= s.decay;
+        if (s.life <= 0 || s.y < -20) sparks.splice(i, 1);
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < sparks.length; i++) {
+        var s = sparks[i];
+        var a = s.life * s.life; // quadratic fade
+        var sz = s.size * s.life;
+        // Core
+        ctx.globalAlpha = a;
+        ctx.fillStyle = 'rgb(' + Math.round(s.r) + ',' + Math.round(s.g) + ',' + Math.round(s.b) + ')';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, sz, 0, Math.PI * 2);
+        ctx.fill();
+        // Glow
+        ctx.globalAlpha = a * 0.4;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, sz * 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,107,53,0.3)';
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    var last = 0;
+    function loop(time) {
+      var dt = Math.min((time - last) / 1000, 0.05);
+      last = time;
+      spawnAmbient(time);
+      spawnBurst(time);
+      update(dt);
+      draw();
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(function(t) { last = t; loop(t); });
+  })();
+
+
 
   // ─── Theme Toggle ───
   const savedTheme = localStorage.getItem('thinksmith-theme') || 'dark';
@@ -1621,16 +1789,31 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
       return;
     }
 
-    container.innerHTML = messages.slice().reverse().map(function(msg) {
+    var reversed = messages.slice().reverse();
+    container.innerHTML = reversed.map(function(msg, i) {
+      var origIndex = messages.length - 1 - i;
       return '<div class="message-card">' +
         '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">' +
           '<span style="font-family: \'Montserrat\', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em;">' + escapeHtml(msg.name) + '</span>' +
-          '<span style="font-family: \'Inter\', sans-serif; font-size: 0.65rem; opacity: 0.3;">' + escapeHtml(msg.date) + '</span>' +
+          '<div style="display: flex; align-items: center; gap: 0.75rem;">' +
+            '<span style="font-family: \'Inter\', sans-serif; font-size: 0.65rem; opacity: 0.3;">' + escapeHtml(msg.date) + '</span>' +
+            '<button onclick="deleteMessage(' + origIndex + ')" style="background:none;border:none;cursor:pointer;opacity:0.25;transition:opacity 0.3s;padding:2px;" onmouseover="this.style.opacity=\'0.8\'" onmouseout="this.style.opacity=\'0.25\'" title="삭제">' +
+              '<span class="iconify" data-icon="lucide:x" data-width="14" style="color:#FF6B35;"></span>' +
+            '</button>' +
+          '</div>' +
         '</div>' +
         '<p style="font-family: \'Inter\', sans-serif; font-size: 0.85rem; line-height: 1.6; opacity: 0.7;">' + escapeHtml(msg.message) + '</p>' +
       '</div>';
     }).join('');
   }
+
+  window.deleteMessage = function(index) {
+    if (!confirm('이 메시지를 삭제할까요?')) return;
+    var messages = getMessages();
+    messages.splice(index, 1);
+    saveMessages(messages);
+    renderMessages();
+  };
 
   renderMessages();
 
