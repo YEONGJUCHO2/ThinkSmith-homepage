@@ -778,23 +778,24 @@ tailwind.config = {
   /* ─── Guestbook ─── */
   .guestbook-input {
     width: 100%;
-    background: rgba(233,230,225,0.05);
-    border: 1px solid rgba(233,230,225,0.1);
+    background: rgba(233,230,225,0.04);
+    border: 1px solid rgba(233,230,225,0.08);
     color: #E9E6E1;
-    padding: 0.9rem 1.2rem;
+    padding: 1rem 1.2rem;
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    border-radius: 6px;
+    border-radius: 8px;
     outline: none;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
 
   .guestbook-input:focus {
     border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.1), 0 0 20px rgba(255,107,53,0.05);
   }
 
   .guestbook-input::placeholder {
-    color: rgba(233,230,225,0.3);
+    color: rgba(233,230,225,0.25);
   }
 
   [data-theme="light"] .section-dark .guestbook-input {
@@ -807,46 +808,120 @@ tailwind.config = {
   }
   [data-theme="light"] .section-dark .guestbook-input:focus {
     border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
   }
 
   .guestbook-submit {
     background: #FF6B35;
     color: #fff;
     border: none;
-    padding: 0.9rem 2rem;
+    padding: 1rem 2.5rem;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
   }
 
   .guestbook-submit:hover {
     background: #CC5529;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,107,53,0.3);
   }
 
   .guestbook-submit:active {
     transform: translateY(0);
+    box-shadow: none;
   }
+
+  .gb-form-header {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #FF6B35;
+    margin-bottom: 1.5rem;
+  }
+
+  .gb-messages-panel {
+    background: rgba(233,230,225,0.02);
+    border: 1px solid rgba(233,230,225,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-height: 450px;
+    overflow-y: auto;
+  }
+
+  .gb-messages-panel::-webkit-scrollbar { width: 4px; }
+  .gb-messages-panel::-webkit-scrollbar-track { background: transparent; }
+  .gb-messages-panel::-webkit-scrollbar-thumb { background: rgba(255,107,53,0.3); border-radius: 2px; }
 
   .message-card {
     background: rgba(233,230,225,0.03);
     border: 1px solid rgba(233,230,225,0.06);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 1.2rem 1.5rem;
-    transition: border-color 0.3s;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: msgAppear 0.4s ease forwards;
   }
 
   .message-card:hover {
     border-color: rgba(255,107,53,0.2);
+    background: rgba(255,107,53,0.03);
+  }
+
+  .msg-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF6B35 0%, #CC5529 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .msg-time {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6rem;
+    opacity: 0.25;
+    letter-spacing: 0.05em;
+  }
+
+  @keyframes msgAppear {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .gb-count {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    opacity: 0.3;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
   }
 
   [data-theme="light"] .section-dark .message-card {
     background: rgba(10,10,10,0.03);
+    border-color: rgba(10,10,10,0.06);
+  }
+
+  [data-theme="light"] .section-dark .gb-messages-panel {
+    background: rgba(10,10,10,0.02);
     border-color: rgba(10,10,10,0.06);
   }
 
@@ -1475,26 +1550,34 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
   <div style="max-width: 1200px; margin: 0 auto;">
 
     <div class="anim-fade-up" style="margin-bottom: clamp(2rem, 4vw, 3rem);">
-      <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.5rem, 3vw, 2.5rem);">Guestbook</span>
-      <span style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; margin-left: 1rem;">방명록</span>
+      <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.5rem, 3vw, 2.5rem); display: block; margin-bottom: 0.5rem;">Forge Log</span>
+      <span style="font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4;">방명록 — 대장간의 기록</span>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 4vw, 3rem);" class="guestbook-grid">
       <!-- Form -->
       <div class="anim-slide-left">
+        <div class="gb-form-header">
+          <span class="iconify" data-icon="lucide:pen-tool" data-width="14" style="vertical-align: middle; margin-right: 0.5rem;"></span>
+          기록 남기기
+        </div>
         <form id="guestbookForm" style="display: flex; flex-direction: column; gap: 1rem;">
-          <input type="text" class="guestbook-input" id="gbName" placeholder="이름 / Name" maxlength="50" required>
-          <textarea class="guestbook-input" id="gbMessage" placeholder="메시지를 남겨주세요 / Leave a message..." rows="5" maxlength="500" required style="resize: vertical; min-height: 120px;"></textarea>
+          <div style="display: grid; grid-template-columns: 1fr; gap: 0.8rem;">
+            <input type="text" class="guestbook-input" id="gbName" placeholder="이름을 남겨주세요" maxlength="50" required>
+          </div>
+          <textarea class="guestbook-input" id="gbMessage" placeholder="대장간에 흔적을 남겨주세요. 응원, 피드백, 아무 말이나 환영합니다." rows="5" maxlength="500" required style="resize: vertical; min-height: 140px;"></textarea>
           <button type="submit" class="guestbook-submit" style="align-self: flex-start;">
-            <span class="iconify" data-icon="lucide:send" data-width="14" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;"></span>
-            Leave Message
+            <span class="iconify" data-icon="lucide:hammer" data-width="14" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;"></span>
+            기록 새기기
           </button>
         </form>
       </div>
 
       <!-- Messages -->
-      <div class="anim-slide-right" id="guestbookMessages" style="display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto; padding-right: 0.5rem;">
-        <!-- Messages will be rendered by JS -->
+      <div class="anim-slide-right">
+        <div class="gb-messages-panel" id="guestbookMessages">
+          <!-- Messages will be rendered by JS -->
+        </div>
       </div>
     </div>
   </div>
@@ -1864,33 +1947,55 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
     global: { headers: { 'x-author-token': authorToken } }
   });
 
+  function timeAgo(dateStr) {
+    var now = new Date();
+    var date = new Date(dateStr);
+    var diff = Math.floor((now - date) / 1000);
+    if (diff < 60) return '방금 전';
+    if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+    if (diff < 86400) return Math.floor(diff / 3600) + '시간 전';
+    if (diff < 604800) return Math.floor(diff / 86400) + '일 전';
+    return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
   async function renderMessages() {
     var container = document.getElementById('guestbookMessages');
     var { data, error } = await sb.from('messages').select('id,name,message,created_at').order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      container.innerHTML = '<div style="text-align: center; opacity: 0.3; padding: 3rem 0; font-family: \'Cormorant Garamond\', serif; font-style: italic; font-size: 1.1rem;">아직 메시지가 없습니다.<br>첫 번째 방명록을 남겨주세요!</div>';
+      container.innerHTML = '<div style="text-align: center; opacity: 0.25; padding: 3rem 0;">' +
+        '<span class="iconify" data-icon="lucide:book-open" data-width="32" style="color: #FF6B35; margin-bottom: 1rem; display: block;"></span>' +
+        '<p style="font-family: \'Cormorant Garamond\', serif; font-style: italic; font-size: 1.1rem;">아직 기록이 없습니다.</p>' +
+        '<p style="font-family: \'Inter\', sans-serif; font-size: 0.75rem; margin-top: 0.5rem;">첫 번째 흔적을 남겨주세요!</p>' +
+      '</div>';
       return;
     }
 
-    container.innerHTML = data.map(function(msg) {
-      var date = new Date(msg.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' });
+    var countHtml = '<div class="gb-count">' + data.length + '개의 기록</div>';
+
+    container.innerHTML = countHtml + '<div style="display: flex; flex-direction: column; gap: 0.8rem;">' + data.map(function(msg, i) {
+      var initial = msg.name.charAt(0).toUpperCase();
       var canDelete = isAdmin || myMessageIds.indexOf(msg.id) !== -1;
       var deleteBtn = canDelete ?
-        '<button onclick="deleteMessage(' + msg.id + ')" style="background:none;border:none;cursor:pointer;opacity:0.25;transition:opacity 0.3s;padding:2px;" onmouseover="this.style.opacity=\'0.8\'" onmouseout="this.style.opacity=\'0.25\'" title="삭제">' +
-          '<span class="iconify" data-icon="lucide:x" data-width="14" style="color:#FF6B35;"></span>' +
+        '<button onclick="deleteMessage(' + msg.id + ')" style="background:none;border:none;cursor:pointer;opacity:0.2;transition:opacity 0.3s;padding:2px;margin-left:0.5rem;" onmouseover="this.style.opacity=\'0.8\'" onmouseout="this.style.opacity=\'0.2\'" title="삭제">' +
+          '<span class="iconify" data-icon="lucide:x" data-width="12" style="color:#FF6B35;"></span>' +
         '</button>' : '';
-      return '<div class="message-card">' +
-        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">' +
-          '<span style="font-family: \'Montserrat\', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em;">' + escapeHtml(msg.name) + '</span>' +
-          '<div style="display: flex; align-items: center; gap: 0.75rem;">' +
-            '<span style="font-family: \'Inter\', sans-serif; font-size: 0.65rem; opacity: 0.3;">' + escapeHtml(date) + '</span>' +
-            deleteBtn +
+      return '<div class="message-card" style="animation-delay: ' + (i * 0.08) + 's;">' +
+        '<div style="display: flex; gap: 1rem; align-items: flex-start;">' +
+          '<div class="msg-avatar">' + escapeHtml(initial) + '</div>' +
+          '<div style="flex: 1; min-width: 0;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">' +
+              '<span style="font-family: \'Montserrat\', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.03em;">' + escapeHtml(msg.name) + '</span>' +
+              '<div style="display: flex; align-items: center;">' +
+                '<span class="msg-time">' + timeAgo(msg.created_at) + '</span>' +
+                deleteBtn +
+              '</div>' +
+            '</div>' +
+            '<p style="font-family: \'Inter\', sans-serif; font-size: 0.82rem; line-height: 1.65; opacity: 0.65;">' + escapeHtml(msg.message) + '</p>' +
           '</div>' +
         '</div>' +
-        '<p style="font-family: \'Inter\', sans-serif; font-size: 0.85rem; line-height: 1.6; opacity: 0.7;">' + escapeHtml(msg.message) + '</p>' +
       '</div>';
-    }).join('');
+    }).join('') + '</div>';
   }
 
   window.deleteMessage = async function(id) {
