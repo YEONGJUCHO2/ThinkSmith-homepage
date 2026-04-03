@@ -1541,10 +1541,12 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
       <p style="font-family: 'Inter', sans-serif; font-size: 0.7rem; opacity: 0.3;">
         &copy; 2026 ThinkSmith. All rights reserved.
       </p>
-      <div style="display: flex; align-items: center; gap: 0.5rem; opacity: 0.3;">
-        <span class="iconify" data-icon="lucide:eye" data-width="12"></span>
-        <span style="font-family: 'Inter', sans-serif; font-size: 0.7rem;" id="visitorCount">0</span>
-        <span style="font-family: 'Inter', sans-serif; font-size: 0.7rem;">visitors</span>
+      <div style="display: flex; align-items: center; gap: 1rem; opacity: 0.3;">
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <span class="iconify" data-icon="lucide:eye" data-width="12"></span>
+          <span style="font-family: 'Inter', sans-serif; font-size: 0.7rem;" id="visitorCount">-</span>
+          <span style="font-family: 'Inter', sans-serif; font-size: 0.7rem;">total</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1870,21 +1872,21 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
     document.getElementById('gbMessage').value = '';
   });
 
-  // ─── Visitor Counter (daily localStorage) ───
+  // ─── Visitor Counter (GoatCounter API) ───
   function updateVisitorCount() {
-    const COUNTER_KEY = 'thinksmith-visitor-count';
-    const DATE_KEY = 'thinksmith-visitor-date';
-    const today = new Date().toISOString().split('T')[0];
-    let count = parseInt(localStorage.getItem(COUNTER_KEY)) || 0;
-    const lastDate = localStorage.getItem(DATE_KEY);
-
-    if (lastDate !== today) {
-      count++;
-      localStorage.setItem(COUNTER_KEY, count);
-      localStorage.setItem(DATE_KEY, today);
-    }
-
-    document.getElementById('visitorCount').textContent = count.toLocaleString();
+    var el = document.getElementById('visitorCount');
+    if (!el) return;
+    // Fetch total pageviews from GoatCounter
+    var img = new Image();
+    img.src = 'https://jyj29617.goatcounter.com/counter//.json';
+    fetch('https://jyj29617.goatcounter.com/counter//.json')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        el.textContent = data.count || '0';
+      })
+      .catch(function() {
+        el.textContent = '-';
+      });
   }
   updateVisitorCount();
 
@@ -1959,5 +1961,6 @@ for (const el of pretextElements) {
 }
 </script>
 
+<script data-goatcounter="https://jyj29617.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
