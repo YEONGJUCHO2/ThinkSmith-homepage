@@ -1508,7 +1508,7 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
 
       <!-- Brand -->
       <div>
-        <div style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.2rem; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+        <div id="footerLogo" style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.2rem; letter-spacing: 0.05em; margin-bottom: 0.75rem; cursor: default; user-select: none;">
           THINK<span style="color: #FF6B35;">SMITH</span>
         </div>
         <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; opacity: 0.5; line-height: 1.6;">
@@ -1825,8 +1825,40 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
     localStorage.setItem('gb-author-token', authorToken);
   }
 
-  // Track own message IDs
+  // Track own message IDs + admin mode
   var myMessageIds = JSON.parse(localStorage.getItem('gb-my-ids') || '[]');
+  var isAdmin = localStorage.getItem('gb-admin') === 'true';
+
+  // Footer logo triple-click → admin mode
+  var logoClicks = 0;
+  var logoTimer = null;
+  document.addEventListener('DOMContentLoaded', function() {
+    var logo = document.getElementById('footerLogo');
+    if (!logo) return;
+    logo.addEventListener('click', function() {
+      logoClicks++;
+      if (logoTimer) clearTimeout(logoTimer);
+      logoTimer = setTimeout(function() { logoClicks = 0; }, 800);
+      if (logoClicks >= 3) {
+        logoClicks = 0;
+        if (isAdmin) {
+          isAdmin = false;
+          localStorage.removeItem('gb-admin');
+          alert('관리자 모드 해제');
+        } else {
+          var pass = prompt('관리자 비밀번호:');
+          if (pass === ADMIN_PASS) {
+            isAdmin = true;
+            localStorage.setItem('gb-admin', 'true');
+            alert('관리자 모드 활성화');
+          } else if (pass !== null) {
+            alert('비밀번호가 틀렸습니다.');
+          }
+        }
+        renderMessages();
+      }
+    });
+  });
 
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
     global: { headers: { 'x-author-token': authorToken } }
@@ -1843,8 +1875,8 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
 
     container.innerHTML = data.map(function(msg) {
       var date = new Date(msg.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' });
-      var isMine = myMessageIds.indexOf(msg.id) !== -1;
-      var deleteBtn = isMine ?
+      var canDelete = isAdmin || myMessageIds.indexOf(msg.id) !== -1;
+      var deleteBtn = canDelete ?
         '<button onclick="deleteMessage(' + msg.id + ')" style="background:none;border:none;cursor:pointer;opacity:0.25;transition:opacity 0.3s;padding:2px;" onmouseover="this.style.opacity=\'0.8\'" onmouseout="this.style.opacity=\'0.25\'" title="삭제">' +
           '<span class="iconify" data-icon="lucide:x" data-width="14" style="color:#FF6B35;"></span>' +
         '</button>' : '';
@@ -1863,27 +1895,18 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
 
   window.deleteMessage = async function(id) {
     if (!confirm('이 메시지를 삭제할까요?')) return;
-    var { error } = await sb.from('messages').delete().eq('id', id);
-    if (error) {
-      // If RLS blocks, try admin password
-      var pass = prompt('삭제 권한이 없습니다. 관리자 비밀번호를 입력하세요:');
-      if (pass === ADMIN_PASS) {
-        // Admin: create temp client with admin token header matching the message
-        // For admin, we use a direct REST call
-        await fetch(SUPABASE_URL + '/rest/v1/messages?id=eq.' + id, {
-          method: 'DELETE',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': 'Bearer ' + SUPABASE_KEY,
-            'x-author-token': 'admin-override'
-          }
-        });
-      } else if (pass !== null) {
-        alert('비밀번호가 틀렸습니다.');
-        return;
-      } else {
-        return;
-      }
+    if (isAdmin) {
+      await fetch(SUPABASE_URL + '/rest/v1/messages?id=eq.' + id, {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'x-author-token': 'admin-override'
+        }
+      });
+    } else {
+      var { error } = await sb.from('messages').delete().eq('id', id);
+      if (error) { alert('삭제 권한이 없습니다.'); return; }
     }
     myMessageIds = myMessageIds.filter(function(mid) { return mid !== id; });
     localStorage.setItem('gb-my-ids', JSON.stringify(myMessageIds));
