@@ -1896,17 +1896,10 @@ console.log(<span class="code-var">impact</span>); <span class="code-comment">//
   window.deleteMessage = async function(id) {
     if (!confirm('이 메시지를 삭제할까요?')) return;
     if (isAdmin) {
-      await fetch(SUPABASE_URL + '/rest/v1/messages?id=eq.' + id, {
-        method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'x-author-token': 'admin-override'
-        }
-      });
+      await sb.from('messages').delete().eq('id', id);
     } else {
-      var { error } = await sb.from('messages').delete().eq('id', id);
-      if (error) { alert('삭제 권한이 없습니다.'); return; }
+      var { data } = await sb.from('messages').delete().eq('id', id).eq('author_token', authorToken).select();
+      if (!data || data.length === 0) { alert('삭제 권한이 없습니다.'); return; }
     }
     myMessageIds = myMessageIds.filter(function(mid) { return mid !== id; });
     localStorage.setItem('gb-my-ids', JSON.stringify(myMessageIds));
